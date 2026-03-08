@@ -6,3 +6,11 @@ pub enum GameState {
     InMenu,
     Playing,
 }
+
+#[derive(SubStates, Default, Debug, Clone, PartialEq, Eq, Hash, Reflect)]
+#[source(GameState = GameState::Playing)]
+pub enum PausedState {
+    #[default]
+    Playing,
+    Paused,
+}
