@@ -7,7 +7,7 @@ pub struct MyCamera;
 #[derive(Component)]
 pub struct PlayablePlane;
 
-#[derive(Component)]
+#[derive(Component,Clone)]
 pub struct Ball{
     pub velocity: Vec2
 }

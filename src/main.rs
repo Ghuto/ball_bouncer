@@ -17,6 +17,7 @@ fn main() {
         .init_state::<GameState>()
         .add_sub_state::<PausedState>()
         .add_observer(on_toggle_pause_state)
+        .add_observer(on_spawn_ball)
         .add_systems(Startup, spawn_camera)
         .add_systems(
             OnEnter(GameState::Playing),
