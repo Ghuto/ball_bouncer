@@ -13,7 +13,7 @@ pub const PLANE_COLOR: Color = Color::Srgba(bevy::color::palettes::basic::BLACK)
 
 pub const BALL_RADIUS: f32 = 5.;
 pub const BALL_COLOR: Color = Color::Srgba(bevy::color::palettes::basic::WHITE);
-pub const BALL_SPEED: f32 = 100.;
+pub const BALL_SPEED: f32 = 500.;
 
 pub fn spawn_camera(mut commands: Commands) {
     commands.spawn((MyCamera, Transform::default()));

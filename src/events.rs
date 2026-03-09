@@ -1,6 +1,8 @@
 use bevy::prelude::*;
 use bevy_rapier2d::prelude::Velocity;
 
+use crate::components::Ball;
+
 #[derive(Event)]
 pub struct TogglePausedState;
 
