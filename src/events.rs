@@ -1,4 +1,5 @@
 use bevy::prelude::*;
+use bevy_rapier2d::prelude::Velocity;
 
 use crate::components::Ball;
 
@@ -8,5 +9,5 @@ pub struct TogglePausedState;
 #[derive(Event, Clone)]
 pub struct SpawnBall{
     pub transform: Transform,
-    pub ball: Ball,
+    pub velocity: Velocity,
 }
