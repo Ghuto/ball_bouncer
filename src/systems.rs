@@ -13,7 +13,7 @@ pub const PLANE_COLOR: Color = Color::Srgba(bevy::color::palettes::basic::BLACK)
 
 pub const BALL_RADIUS: f32 = 5.;
 pub const BALL_COLOR: Color = Color::Srgba(bevy::color::palettes::basic::WHITE);
-pub const BALL_SPEED: f32 = 500.;
+pub const BALL_SPEED: f32 = 100.;
 
 pub fn spawn_camera(mut commands: Commands) {
     commands.spawn((MyCamera, Transform::default()));
@@ -45,6 +45,11 @@ pub fn on_spawn_ball(
             coefficient: 0.,
             combine_rule: CoefficientCombineRule::Min,
         },
+        ColliderMassProperties::MassProperties(MassProperties {
+            local_center_of_mass: Vec2::new(0., 0.),
+            mass: 1.,
+            principal_inertia: 0.,
+        }),
     ));
 }
 
@@ -76,11 +81,18 @@ pub fn spawn_playable_plane(
         RigidBody::KinematicPositionBased,
         Collider::cuboid(PLANE_WIDTH / 2., PLANE_HEIGHT / 2.),
         PlayablePlane,
-        KinematicCharacterController::default(),
+        KinematicCharacterController {
+            slide: false,
+            autostep: None,
+            normal_nudge_factor: 0.,
+            max_slope_climb_angle: 0.,
+            min_slope_slide_angle: 0.,
+            apply_impulse_to_dynamic_bodies: false,
+            ..Default::default()
+        },
         Mesh2d(meshes.add(Rectangle::new(PLANE_WIDTH, PLANE_HEIGHT))),
         MeshMaterial2d(materials.add(PLANE_COLOR)),
         camera_transform.clone(),
-        LockedAxes::ROTATION_LOCKED,
     ));
 }
 
