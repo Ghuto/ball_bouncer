@@ -1,9 +1,6 @@
 use bevy::{color::palettes::tailwind, prelude::*};
 
-use crate::ui::{
-    on_click_play_button, on_click_quit_button, states::MenuPage, update_text_color_on_hover,
-    update_text_color_on_hover_end,
-};
+use crate::ui::*;
 
 pub const BORDER_COLOR: Color = Color::Srgba(tailwind::GRAY_700);
 pub const TEXT_COLOR: Color = Color::Srgba(tailwind::SLATE_400);

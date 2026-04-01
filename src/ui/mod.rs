@@ -1,10 +1,8 @@
 use bevy::prelude::*;
-use states::*;
 
 use crate::states::GameState;
 
 mod pages;
-mod states;
 
 pub struct GameUI;
 
@@ -13,6 +11,13 @@ impl Plugin for GameUI {
         app.add_sub_state::<MenuPage>()
             .add_systems(OnEnter(MenuPage::Main), pages::main_menu::build);
     }
+}
+
+#[derive(SubStates, Default, Debug, Clone, PartialEq, Eq, Hash, Reflect)]
+#[source(GameState = GameState::InMenu)]
+pub enum MenuPage {
+    #[default]
+    Main,
 }
 
 pub fn on_click_play_button(
@@ -56,4 +61,3 @@ fn update_text_color_on_hover_end(
         }
     }
 }
-
