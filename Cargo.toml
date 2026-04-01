@@ -10,7 +10,7 @@ log = { version = "*", features = [
     "release_max_level_warn",
 ] }
 bevy-inspector-egui = "0.36"
-bevy_rapier2d = "0.33"
+avian2d = "0.6"
 
 # for Linux
 [target.x86_64-unknown-linux-gnu]

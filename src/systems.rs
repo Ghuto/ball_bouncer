@@ -1,6 +1,6 @@
+use avian2d::prelude::*;
 use bevy::prelude::*;
 use bevy::window::PrimaryWindow;
-use bevy_rapier2d::prelude::*;
 
 use crate::components::*;
 use crate::events::*;
@@ -30,26 +30,14 @@ pub fn on_spawn_ball(
         DespawnOnExit(game_state.clone()),
         Ball,
         RigidBody::Dynamic,
-        GravityScale(0.),
-        Ccd::enabled(),
         trigger.velocity,
         trigger.transform,
-        Collider::ball(BALL_RADIUS),
+        Collider::circle(BALL_RADIUS),
         Mesh2d(meshes.add(Sphere::new(BALL_RADIUS))),
         MeshMaterial2d(materials.add(BALL_COLOR)),
-        Restitution {
-            coefficient: 1.,
-            combine_rule: CoefficientCombineRule::Max,
-        },
-        Friction {
-            coefficient: 0.,
-            combine_rule: CoefficientCombineRule::Min,
-        },
-        ColliderMassProperties::MassProperties(MassProperties {
-            local_center_of_mass: Vec2::new(0., 0.),
-            mass: 1.,
-            principal_inertia: 0.,
-        }),
+        Friction::ZERO.with_combine_rule(CoefficientCombine::Min),
+        Restitution::PERFECTLY_ELASTIC.with_combine_rule(CoefficientCombine::Max),
+        GravityScale(0.),
     ));
 }
 
@@ -61,10 +49,7 @@ pub fn spawn_ball(
     transform.translation.y = transform.translation.y + 50.;
 
     commands.trigger(SpawnBall {
-        velocity: Velocity {
-            linvel: Vec2::new(3. * BALL_SPEED, 2. * BALL_SPEED),
-            angvel: 0.,
-        },
+        velocity: LinearVelocity(Vec2::new(3. * BALL_SPEED, 2. * BALL_SPEED)),
         transform: transform,
     });
 }
@@ -77,22 +62,15 @@ pub fn spawn_playable_plane(
     camera_transform: Single<&Transform, (With<MyCamera>, Without<Ball>)>,
 ) {
     commands.spawn((
-        DespawnOnExit(game_state.clone()),
-        RigidBody::KinematicPositionBased,
-        Collider::cuboid(PLANE_WIDTH / 2., PLANE_HEIGHT / 2.),
         PlayablePlane,
-        KinematicCharacterController {
-            slide: false,
-            autostep: None,
-            normal_nudge_factor: 0.,
-            max_slope_climb_angle: 0.,
-            min_slope_slide_angle: 0.,
-            apply_impulse_to_dynamic_bodies: false,
-            ..Default::default()
-        },
+        DespawnOnExit(game_state.clone()),
+        camera_transform.clone(),
         Mesh2d(meshes.add(Rectangle::new(PLANE_WIDTH, PLANE_HEIGHT))),
         MeshMaterial2d(materials.add(PLANE_COLOR)),
-        camera_transform.clone(),
+        RigidBody::Kinematic,
+        Collider::rectangle(PLANE_WIDTH / 2., PLANE_HEIGHT / 2.),
+        LinearVelocity::ZERO,
+        SweptCcd::default(),
     ));
 }
 
@@ -112,7 +90,7 @@ pub fn spawn_border(
 
     commands.spawn((
         DespawnOnExit(game_state.clone()),
-        RigidBody::Fixed,
+        RigidBody::Static,
         camera_transform.clone(),
         Collider::polyline(
             vec![
@@ -128,13 +106,14 @@ pub fn spawn_border(
 
 pub fn control_playable_plane(
     input: Res<ButtonInput<KeyCode>>,
-    time: Res<Time>,
-    mut plane: Single<&mut KinematicCharacterController, With<PlayablePlane>>,
+    mut plane_linear_velocity: Single<&mut LinearVelocity, With<PlayablePlane>>,
 ) {
     if input.any_pressed([KeyCode::ArrowRight, KeyCode::KeyD]) {
-        plane.translation = Some(vec2(PLANE_SPEED * time.delta_secs(), 0.));
+        plane_linear_velocity.0 = Vec2::X * PLANE_SPEED;
     } else if input.any_pressed([KeyCode::ArrowLeft, KeyCode::KeyA]) {
-        plane.translation = Some(vec2(-PLANE_SPEED * time.delta_secs(), 0.));
+        plane_linear_velocity.0 = Vec2::NEG_X * PLANE_SPEED;
+    } else {
+        plane_linear_velocity.0 = Vec2::ZERO;
     }
 }
 

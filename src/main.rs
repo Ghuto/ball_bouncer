@@ -1,9 +1,8 @@
+use bevy::prelude::*;
+use bevy::input::common_conditions::input_just_pressed;
+use avian2d::prelude::*;
 use crate::states::{GameState, PausedState};
 use crate::ui::GameUI;
-use bevy::input::common_conditions::input_just_pressed;
-use bevy::prelude::*;
-use bevy_rapier2d::plugin::{NoUserData, RapierPhysicsPlugin};
-use bevy_rapier2d::render::RapierDebugRenderPlugin;
 use systems::*;
 
 mod components;
@@ -18,8 +17,7 @@ fn main() {
     app.add_plugins((
         DefaultPlugins,
         GameUI,
-        RapierPhysicsPlugin::<NoUserData>::default(),
-        RapierDebugRenderPlugin::default(),
+        PhysicsPlugins::default(),
     ))
     .init_state::<GameState>()
     .add_sub_state::<PausedState>()
