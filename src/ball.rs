@@ -9,46 +9,38 @@ pub const BALL_COLOR: Color = Color::Srgba(bevy::color::palettes::basic::WHITE);
 pub const BALL_SPEED: f32 = 100.;
 
 #[derive(Component, Clone)]
+#[require(
+    RigidBody::Dynamic,
+    Collider::circle(BALL_RADIUS),
+    GravityScale(0.),
+    TransformInterpolation,
+    Friction{
+        dynamic_coefficient : 0.,
+        static_coefficient : 0.,
+        combine_rule: CoefficientCombine::Min,
+    },
+    Restitution{
+        coefficient : 1.,
+        combine_rule: CoefficientCombine::Max,
+    },
+    DespawnOnExit::<GameState>(GameState::Playing)
+)]
 pub struct Ball;
-
-#[derive(Event, Clone)]
-pub struct SpawnBall {
-    pub transform: Transform,
-    pub velocity: LinearVelocity,
-}
-
-pub fn on_spawn_ball(
-    trigger: On<SpawnBall>,
-    mut commands: Commands,
-    mut meshes: ResMut<Assets<Mesh>>,
-    mut materials: ResMut<Assets<ColorMaterial>>,
-    game_state: Res<State<GameState>>,
-) {
-    commands.spawn((
-        DespawnOnExit(game_state.clone()),
-        Ball,
-        RigidBody::Dynamic,
-        trigger.velocity,
-        trigger.transform,
-        Collider::circle(BALL_RADIUS),
-        Mesh2d(meshes.add(Sphere::new(BALL_RADIUS))),
-        MeshMaterial2d(materials.add(BALL_COLOR)),
-        Friction::ZERO.with_combine_rule(CoefficientCombine::Min),
-        Restitution::PERFECTLY_ELASTIC.with_combine_rule(CoefficientCombine::Max),
-        GravityScale(0.),
-        TransformInterpolation,
-    ));
-}
 
 pub fn spawn_ball(
     mut commands: Commands,
+    mut meshes: ResMut<Assets<Mesh>>,
+    mut materials: ResMut<Assets<ColorMaterial>>,
     plane_transform: Single<&mut Transform, With<PlayablePlane>>,
 ) {
     let mut transform = plane_transform.clone();
     transform.translation.y = transform.translation.y + 50.;
 
-    commands.trigger(SpawnBall {
-        velocity: LinearVelocity(Vec2::new(3. * BALL_SPEED, 2. * BALL_SPEED)),
-        transform: transform,
-    });
+    commands.spawn((
+        Ball,
+        LinearVelocity(Vec2::new(3. * BALL_SPEED, 2. * BALL_SPEED)),
+        transform,
+        Mesh2d(meshes.add(Sphere::new(BALL_RADIUS))),
+        MeshMaterial2d(materials.add(BALL_COLOR)),
+    ));
 }
