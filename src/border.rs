@@ -1,4 +1,7 @@
-use bevy::prelude::*;
+use avian2d::prelude::*;
+use bevy::{prelude::*, window::PrimaryWindow};
+
+use crate::{camera::MyCamera, playable_plane::PlayablePlane, states::GameState};
 
 pub fn spawn_border(
     mut commands: Commands,

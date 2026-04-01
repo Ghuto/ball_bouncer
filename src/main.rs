@@ -1,15 +1,16 @@
 use avian2d::prelude::*;
 use bevy::input::common_conditions::input_just_pressed;
 use bevy::prelude::*;
-use bevy::window::PrimaryWindow;
 
 use crate::ball::*;
+use crate::border::*;
 use crate::camera::*;
 use crate::playable_plane::*;
 use crate::states::*;
 use crate::ui::*;
 
 mod ball;
+mod border;
 mod camera;
 mod playable_plane;
 mod states;
@@ -44,4 +45,3 @@ fn main() {
 
     app.run();
 }
-
