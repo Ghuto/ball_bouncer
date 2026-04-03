@@ -3,7 +3,7 @@ use bevy::prelude::*;
 
 use crate::{camera::MyCamera, states::GameState};
 
-pub const PLANE_SPEED: f32 = 200.;
+pub const PLANE_SPEED: f32 = 300.;
 pub const PLANE_WIDTH: f32 = 100.;
 pub const PLANE_HEIGHT: f32 = 10.;
 pub const PLANE_COLOR: Color = Color::Srgba(bevy::color::palettes::basic::BLACK);
@@ -37,19 +37,44 @@ pub fn spawn_playable_plane(
 
 pub fn control_playable_plane(
     input: Res<ButtonInput<KeyCode>>,
-    mut plane_linear_velocity: Single<&mut LinearVelocity, With<PlayablePlane>>,
+    time: Res<Time>,
+    playable_plane: Single<
+        (&mut Transform, &Collider, &mut LinearVelocity, Entity),
+        With<PlayablePlane>,
+    >,
+    move_and_slide: MoveAndSlide,
 ) {
-    let mut movement = Vec2::ZERO;
+    let (mut transform, collider, mut linear_velocity, entity) = playable_plane.into_inner();
+
+    // Adjust linear velocity based on input
+    // for Avian's move and slide
+    linear_velocity.0 = Vec2::ZERO;
 
     if input.any_pressed(INPUT_LEFT) {
-        movement += Vec2::X;
+        linear_velocity.0 += Vec2::X * PLANE_SPEED;
     }
 
     if input.any_pressed(INPUT_RIGHT) {
-        movement -= Vec2::X;
+        linear_velocity.0 -= Vec2::X * PLANE_SPEED;
     }
 
-    movement *= PLANE_SPEED;
+    // Using Avian's move and slide. To handle kinematic
+    // body collisions. In case it hits a wall
+    let MoveAndSlideOutput {
+        position: new_position,
+        projected_velocity: new_velocity,
+    } = move_and_slide.move_and_slide(
+        collider,
+        transform.translation.xy(),
+        Rotation::from(transform.rotation).as_radians(),
+        linear_velocity.0,
+        time.delta(),
+        &MoveAndSlideConfig::default(),
+        &SpatialQueryFilter::from_excluded_entities([entity]),
+        |_| MoveAndSlideHitResponse::Accept,
+    );
 
-    plane_linear_velocity.0 = movement;
+    // apply move and slide output
+    linear_velocity.0 = new_velocity;
+    transform.translation = new_position.extend(transform.translation.z);
 }
