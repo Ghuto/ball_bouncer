@@ -9,7 +9,6 @@ env:
   # update with the name of the main binary
   binary: ball_bouncer
   add_binaries_to_github_release: false
-  upload_artifacts: false
   itch_target: uvak/ball-bouncer
 
 jobs:
@@ -38,7 +37,7 @@ jobs:
 
       - name: Prepare package
         run: |
-          wasm-bindgen --no-typescript --out-name ${{ env.binary }} --out-dir wasm --target web target/wasm32-unknown-unknown/release/${{ env.binary }}.wasm
+          wasm-bindgen --no-typescript --out-name bevy-game --out-dir wasm --target web target/wasm32-unknown-unknown/release/${{ env.binary }}.wasm
           cp -r assets wasm/ || true # Try to copy, but ignore if it can't copy if source directory does not exist
 
       - name: Package as a zip
@@ -47,7 +46,6 @@ jobs:
           zip --recurse-paths ../${{ env.binary }}.zip .
 
       - name: Upload binaries to artifacts
-        if: ${{ env.upload_aftifacts == 'true' }}
         uses: actions/upload-artifact@v4
         with:
           path: ${{ env.binary }}.zip
