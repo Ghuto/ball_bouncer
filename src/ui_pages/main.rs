@@ -1,16 +1,11 @@
-use bevy::{color::palettes::tailwind, prelude::*};
+use bevy::prelude::*;
 
-use crate::ui::*;
+use super::*;
 
-pub const BORDER_COLOR: Color = Color::Srgba(tailwind::GRAY_700);
-pub const TEXT_COLOR: Color = Color::Srgba(tailwind::SLATE_400);
-pub const TEXT_HOVER_COLOR: Color = Color::Srgba(tailwind::SLATE_100);
-pub const BACKGROUND_COLOR: Color = Color::Srgba(tailwind::ZINC_800);
-
-pub fn build(mut commands: Commands, menu: Res<State<MenuPage>>) {
+pub fn build(mut commands: Commands) {
     commands
         .spawn((
-            DespawnOnExit(menu.clone()),
+            DespawnOnExit(MenuPage::Main),
             Node {
                 width: Val::Percent(100.),
                 height: Val::Percent(100.),
@@ -48,8 +43,8 @@ pub fn build(mut commands: Commands, menu: Res<State<MenuPage>>) {
                             )],
                         ))
                         .observe(on_click_play_button)
-                        .observe(update_text_color_on_hover(TEXT_HOVER_COLOR))
-                        .observe(update_text_color_on_hover_end(TEXT_COLOR));
+                        .observe(change_color_on_over(TEXT_HOVER_COLOR,None))
+                        .observe(change_color_on_out(TEXT_COLOR,None));
 
                     right_container
                         .spawn((
@@ -65,8 +60,8 @@ pub fn build(mut commands: Commands, menu: Res<State<MenuPage>>) {
                                 TextFont::from_font_size(36.),
                             )],
                         ))
-                        .observe(update_text_color_on_hover(TEXT_HOVER_COLOR))
-                        .observe(update_text_color_on_hover_end(TEXT_COLOR));
+                        .observe(change_color_on_over(TEXT_HOVER_COLOR,None))
+                        .observe(change_color_on_out(TEXT_COLOR,None));
 
                     right_container
                         .spawn((
@@ -83,8 +78,24 @@ pub fn build(mut commands: Commands, menu: Res<State<MenuPage>>) {
                             )],
                         ))
                         .observe(on_click_quit_button)
-                        .observe(update_text_color_on_hover(TEXT_HOVER_COLOR))
-                        .observe(update_text_color_on_hover_end(TEXT_COLOR));
+                        .observe(change_color_on_over(TEXT_HOVER_COLOR,None))
+                        .observe(change_color_on_out(TEXT_COLOR,None));
                 });
         });
+}
+
+fn on_click_play_button(
+    _trigger: On<Pointer<Click>>,
+    mut game_state: ResMut<NextState<MainState>>,
+    mut page_state: ResMut<NextState<MenuPage>>,
+) {
+    game_state.set(MainState::GamePlay);
+    page_state.set(MenuPage::OverLay);
+}
+
+fn on_click_quit_button(
+    _trigger: On<Pointer<Click>>,
+    mut app_exit_message_writer: MessageWriter<AppExit>,
+) {
+    app_exit_message_writer.write(AppExit::default());
 }

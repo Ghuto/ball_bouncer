@@ -1,7 +1,7 @@
 use avian2d::prelude::*;
 use bevy::prelude::*;
 
-use crate::{camera::MyCamera, states::GameState};
+use crate::MainState;
 
 pub const PLANE_SPEED: f32 = 300.;
 pub const PLANE_WIDTH: f32 = 100.;
@@ -12,26 +12,32 @@ pub const INPUT_LEFT: [KeyCode; 2] = [KeyCode::ArrowRight, KeyCode::KeyD];
 pub const INPUT_RIGHT: [KeyCode; 2] = [KeyCode::ArrowLeft, KeyCode::KeyA];
 
 #[derive(Component)]
+#[require(
+    TransformInterpolation,
+    DespawnOnExit::<MainState>(MainState::GamePlay),
+    Collider::rectangle(PLANE_WIDTH, PLANE_HEIGHT),
+    LinearVelocity::ZERO,
+    SweptCcd::default(),
+    RigidBody::Kinematic,
+)]
 pub struct PlayablePlane;
 
+#[derive(Event, Clone)]
+pub struct SpawnPlayablePlane {
+    pub at_position: Vec3,
+}
+
 pub fn spawn_playable_plane(
+    trigger: On<SpawnPlayablePlane>,
     mut commands: Commands,
     mut meshes: ResMut<Assets<Mesh>>,
     mut materials: ResMut<Assets<ColorMaterial>>,
-    game_state: Res<State<GameState>>,
-    camera_transform: Single<&Transform, With<MyCamera>>,
 ) {
     commands.spawn((
         PlayablePlane,
-        TransformInterpolation,
-        DespawnOnExit(game_state.clone()),
-        camera_transform.clone(),
+        Transform::from_translation(trigger.at_position),
         Mesh2d(meshes.add(Rectangle::new(PLANE_WIDTH, PLANE_HEIGHT))),
         MeshMaterial2d(materials.add(PLANE_COLOR)),
-        RigidBody::Kinematic,
-        Collider::rectangle(PLANE_WIDTH, PLANE_HEIGHT),
-        LinearVelocity::ZERO,
-        SweptCcd::default(),
     ));
 }
 
