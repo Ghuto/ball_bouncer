@@ -1,13 +1,15 @@
 use avian2d::prelude::*;
 use bevy::{prelude::*, window::PrimaryWindow};
 
-use crate::{camera::MyCamera, playable_plane::PlayablePlane, states::GameState};
+use crate::MainState;
+
+#[derive(Event, Clone)]
+pub struct SpawnBorder;
 
 pub fn spawn_border(
+    _: On<SpawnBorder>,
     mut commands: Commands,
-    camera_transform: Single<&Transform, (With<MyCamera>, Without<PlayablePlane>)>,
     window: Single<&Window, With<PrimaryWindow>>,
-    game_state: Res<State<GameState>>,
 ) {
     let half_window_size = window.width() / 2.;
     let half_window_height = window.height() / 2.;
@@ -18,9 +20,8 @@ pub fn spawn_border(
     let bottom = -half_window_height;
 
     commands.spawn((
-        DespawnOnExit(game_state.clone()),
+        DespawnOnExit(MainState::GamePlay),
         RigidBody::Static,
-        camera_transform.clone(),
         Collider::polyline(
             vec![
                 vec2(left, bottom),
