@@ -1,5 +1,9 @@
 use avian2d::prelude::*;
 use bevy::prelude::*;
+#[cfg(feature = "inspector")]
+use bevy_remote::RemotePlugin;
+#[cfg(feature = "inspector")]
+use bevy_remote::http::RemoteHttpPlugin;
 
 use crate::ball::*;
 use crate::border::*;
@@ -16,50 +20,56 @@ mod playable_plane;
 mod ui_pages;
 
 fn main() {
-    App::new()
-        .add_plugins((
-            DefaultPlugins.set(WindowPlugin {
-                primary_window: Some(Window {
-                    resizable: false,
-                    ..Default::default()
-                }),
+    let mut app = App::new();
+
+    app.add_plugins((
+        DefaultPlugins.set(WindowPlugin {
+            primary_window: Some(Window {
+                resizable: false,
                 ..Default::default()
             }),
-            PhysicsPlugins::default(),
-            GameUI,
-        ))
-        .init_state::<MainState>()
-        .add_sub_state::<GameState>()
-        .add_systems(Startup, spawn_camera)
-        .add_systems(
-            OnEnter(MainState::GamePlay),
-            (
-                trigger_event(SpawnPlayablePlane {
-                    at_position: Vec3::new(0., 0., 0.),
-                }),
-                trigger_event(SpawnBall {
-                    at_position: Vec3::new(0., 50., 0.),
-                }),
-                trigger_event(SpawnBorder),
-            ),
+            ..Default::default()
+        }),
+        PhysicsPlugins::default(),
+        GameUI,
+    ))
+    .init_state::<MainState>()
+    .add_sub_state::<GameState>()
+    .add_systems(Startup, spawn_camera)
+    .add_systems(
+        OnEnter(MainState::GamePlay),
+        (
+            trigger_event(SpawnPlayablePlane {
+                at_position: Vec3::new(0., 0., 0.),
+            }),
+            trigger_event(SpawnBall {
+                at_position: Vec3::new(0., 50., 0.),
+            }),
+            trigger_event(SpawnBorder),
+        ),
+    )
+    .add_systems(
+        Update,
+        ((
+            watch_input_for_pause,
+            control_playable_plane,
+            watch_game_over_condition,
         )
-        .add_systems(
-            Update,
-            ((
-                watch_input_for_pause,
-                control_playable_plane,
-                watch_game_over_condition,
-            )
-                .run_if(in_state(GameState::Running)),),
-        )
-        .add_observer(pause_game)
-        .add_observer(resume_game)
-        .add_observer(spawn_playable_plane)
-        .add_observer(spawn_ball)
-        .add_observer(spawn_border)
-        .add_observer(on_game_over)
-        .add_observer(on_restart)
-        .run();
+            .run_if(in_state(GameState::Running)),),
+    )
+    .add_observer(pause_game)
+    .add_observer(resume_game)
+    .add_observer(spawn_playable_plane)
+    .add_observer(spawn_ball)
+    .add_observer(spawn_border)
+    .add_observer(on_game_over)
+    .add_observer(on_restart);
+
+    #[cfg(feature = "inspector")]
+    app.add_plugins(RemotePlugin::default())
+        .add_plugins(RemoteHttpPlugin::default());
+
+    app.run();
 }
 
 fn trigger_event<'a>(event: impl Event<Trigger<'a>: Default> + Clone) -> impl Fn(Commands) {
