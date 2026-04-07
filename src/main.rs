@@ -17,7 +17,17 @@ mod ui_pages;
 
 fn main() {
     App::new()
-        .add_plugins((DefaultPlugins, PhysicsPlugins::default(), GameUI))
+        .add_plugins((
+            DefaultPlugins.set(WindowPlugin {
+                primary_window: Some(Window {
+                    resizable: false,
+                    ..Default::default()
+                }),
+                ..Default::default()
+            }),
+            PhysicsPlugins::default(),
+            GameUI,
+        ))
         .init_state::<MainState>()
         .add_sub_state::<GameState>()
         .add_systems(Startup, spawn_camera)
