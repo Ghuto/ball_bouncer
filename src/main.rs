@@ -7,6 +7,7 @@ use bevy_remote::http::RemoteHttpPlugin;
 
 use crate::ball::*;
 use crate::border::*;
+use crate::brick::*;
 use crate::camera::*;
 use crate::pause::*;
 use crate::playable_plane::*;
@@ -14,6 +15,7 @@ use crate::ui_pages::*;
 
 mod ball;
 mod border;
+mod brick;
 mod camera;
 mod pause;
 mod playable_plane;
@@ -45,6 +47,9 @@ fn main() {
             trigger_event(SpawnBall {
                 at_position: Vec3::new(0., 50., 0.),
             }),
+            trigger_event(SpawnBrick {
+                at_position: Vec3::new(0., 200., 0.),
+            }),
             trigger_event(SpawnBorder),
         ),
     )
@@ -63,6 +68,7 @@ fn main() {
     .add_observer(spawn_ball)
     .add_observer(spawn_border)
     .add_observer(on_game_over)
+    .add_observer(on_spawn_brick)
     .add_observer(on_restart);
 
     #[cfg(feature = "inspector")]
@@ -114,6 +120,9 @@ pub fn on_restart(
     });
     commands.trigger(SpawnBall {
         at_position: Vec3::new(0., 50., 0.),
+    });
+    commands.trigger(SpawnBrick {
+        at_position: Vec3::new(0., 200., 0.),
     });
     commands.trigger(SpawnBorder);
     game_state.set(GameState::Running);
