@@ -2,6 +2,7 @@ use bevy::{color::palettes::tailwind, prelude::*};
 
 use crate::MainState;
 
+mod levels;
 mod lost;
 mod main;
 mod overlay;
@@ -23,7 +24,8 @@ impl Plugin for GameUI {
             .add_systems(OnEnter(MenuPage::Main), main::build)
             .add_systems(OnEnter(MenuPage::Lose), lost::build)
             .add_systems(OnEnter(MenuPage::Pause), pause::build)
-            .add_systems(OnEnter(MenuPage::OverLay), overlay::build);
+            .add_systems(OnEnter(MenuPage::OverLay), overlay::build)
+            .add_systems(OnEnter(MenuPage::Levels), levels::build);
     }
 }
 
@@ -34,6 +36,7 @@ pub enum MenuPage {
     OverLay,
     Lose,
     Pause,
+    Levels,
 }
 
 fn change_color_on_over(
