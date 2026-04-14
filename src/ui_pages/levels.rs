@@ -5,7 +5,7 @@ use super::*;
 pub fn build(mut commands: Commands) {
     commands
         .spawn((
-            DespawnOnExit(MenuPage::Main),
+            DespawnOnExit(MenuPage::Levels),
             Node {
                 width: Val::Percent(100.),
                 height: Val::Percent(100.),
@@ -27,8 +27,8 @@ pub fn build(mut commands: Commands) {
                     },
                     BorderColor::all(BORDER_COLOR),
                 ))
-                .with_children(|right_container| {
-                    right_container
+                .with_children(|content_content| {
+                    content_content
                         .spawn((
                             Node {
                                 width: Val::Percent(100.),
@@ -37,25 +37,7 @@ pub fn build(mut commands: Commands) {
                             },
                             Button,
                             children![(
-                                Text::new("Levels"),
-                                TextColor(TEXT_COLOR),
-                                TextFont::from_font_size(36.),
-                            )],
-                        ))
-                        .observe(on_click_levels)
-                        .observe(change_color_on_over(TEXT_HOVER_COLOR, None))
-                        .observe(change_color_on_out(TEXT_COLOR, None));
-
-                    right_container
-                        .spawn((
-                            Node {
-                                width: Val::Percent(100.),
-                                padding: UiRect::left(Val::Px(10.)),
-                                ..Default::default()
-                            },
-                            Button,
-                            children![(
-                                Text::new("Settings"),
+                                Text::new("level 1"),
                                 TextColor(TEXT_COLOR),
                                 TextFont::from_font_size(36.),
                             )],
@@ -63,7 +45,54 @@ pub fn build(mut commands: Commands) {
                         .observe(change_color_on_over(TEXT_HOVER_COLOR, None))
                         .observe(change_color_on_out(TEXT_COLOR, None));
 
-                    right_container
+                    content_content
+                        .spawn((
+                            Node {
+                                width: Val::Percent(100.),
+                                padding: UiRect::left(Val::Px(10.)),
+                                margin: UiRect::top(Val::Auto),
+                                ..Default::default()
+                            },
+                            Button,
+                            children![(
+                                Text::new("Return"),
+                                TextColor(TEXT_COLOR),
+                                TextFont::from_font_size(36.),
+                            )],
+                        ))
+                        .observe(on_click_return)
+                        .observe(change_color_on_over(TEXT_HOVER_COLOR, None))
+                        .observe(change_color_on_out(TEXT_COLOR, None));
+                });
+
+            container
+                .spawn((
+                    Node {
+                        flex_direction: FlexDirection::Column,
+                        justify_content: JustifyContent::Start,
+                        height: Val::Percent(100.),
+                        width: Val::Px(250.),
+                        border: UiRect::right(Val::Px(5.)),
+                        ..Default::default()
+                    },
+                    BorderColor::all(BORDER_COLOR),
+                ))
+                .with_children(|content_content| {
+                    content_content.spawn((
+                        Node {
+                            width: Val::Percent(100.),
+                            padding: UiRect::left(Val::Px(10.)),
+                            ..Default::default()
+                        },
+                        Button,
+                        children![(
+                            Text::new("Score:"),
+                            TextColor(TEXT_COLOR),
+                            TextFont::from_font_size(36.),
+                        )],
+                    ));
+
+                    content_content
                         .spawn((
                             Node {
                                 width: Val::Percent(100.),
@@ -72,28 +101,27 @@ pub fn build(mut commands: Commands) {
                             },
                             Button,
                             children![(
-                                Text::new("Quit"),
+                                Text::new("Play"),
                                 TextColor(TEXT_COLOR),
                                 TextFont::from_font_size(36.),
                             )],
                         ))
-                        .observe(on_click_quit_button)
+                        .observe(on_click_play_button)
                         .observe(change_color_on_over(TEXT_HOVER_COLOR, None))
                         .observe(change_color_on_out(TEXT_COLOR, None));
                 });
         });
 }
 
-fn on_click_levels(
-    _trigger: On<Pointer<Click>>,
-    mut page_state_set: ResMut<NextState<MenuPage>>,
-) {
-    page_state_set.set(MenuPage::Levels);
+fn on_click_return(_trigger: On<Pointer<Click>>, mut page_state: ResMut<NextState<MenuPage>>) {
+    page_state.set(MenuPage::Main);
 }
 
-fn on_click_quit_button(
+fn on_click_play_button(
     _trigger: On<Pointer<Click>>,
-    mut app_exit_message_writer: MessageWriter<AppExit>,
+    mut game_state: ResMut<NextState<MainState>>,
+    mut page_state: ResMut<NextState<MenuPage>>,
 ) {
-    app_exit_message_writer.write(AppExit::default());
+    game_state.set(MainState::GamePlay);
+    page_state.set(MenuPage::OverLay);
 }
