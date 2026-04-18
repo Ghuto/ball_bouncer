@@ -1,5 +1,6 @@
 use avian2d::prelude::*;
 use bevy::prelude::*;
+use bevy::window::WindowResolution;
 #[cfg(feature = "inspector")]
 use bevy_remote::RemotePlugin;
 #[cfg(feature = "inspector")]
@@ -21,6 +22,9 @@ mod pause;
 mod playable_plane;
 mod ui_pages;
 
+const DEFAULT_WIDTH_RESOLUTION: u32 = 1920;
+const DEFAULT_HEIGHT_RESOLUTION: u32 = 1080;
+
 fn main() {
     let mut app = App::new();
 
@@ -28,6 +32,10 @@ fn main() {
         DefaultPlugins.set(WindowPlugin {
             primary_window: Some(Window {
                 resizable: false,
+                resolution: WindowResolution::new(
+                    DEFAULT_WIDTH_RESOLUTION,
+                    DEFAULT_HEIGHT_RESOLUTION,
+                ),
                 ..Default::default()
             }),
             ..Default::default()
