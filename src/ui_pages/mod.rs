@@ -1,3 +1,5 @@
+use std::fmt::Debug;
+
 use bevy::{color::palettes::tailwind, prelude::*};
 
 use crate::MainState;
@@ -39,31 +41,12 @@ pub enum MenuPage {
     Levels,
 }
 
-fn change_color_on_over(
+fn on_event_update_ui_entity<Event: Debug + Clone + Reflect>(
     new_text_color: Color,
     optional_new_border_color: Option<Color>,
-) -> impl Fn(On<Pointer<Over>>, Query<(&Children, Option<&mut BorderColor>)>, Query<&mut TextColor>) {
+) -> impl Fn(On<Pointer<Event>>, Query<(&Children, Option<&mut BorderColor>)>, Query<&mut TextColor>) {
     move |trigger, mut button_q, mut text_color_q| {
 
-        let (children, optional_border_color) = button_q.get_mut(trigger.entity).unwrap();
-
-        if let (Some(new_border_color,),Some(mut border_color)) = (optional_new_border_color,optional_border_color) {
-            border_color.set_all(new_border_color);
-        }
-
-        for child in children {
-            if let Ok(mut text_color) = text_color_q.get_mut(*child) {
-                text_color.0 = new_text_color;
-            }
-        }
-    }
-}
-
-fn change_color_on_out(
-    new_text_color: Color,
-    optional_new_border_color: Option<Color>,
-) -> impl Fn(On<Pointer<Out>>, Query<(&Children, Option<&mut BorderColor>)>, Query<&mut TextColor>) {
-    move |trigger, mut button_q, mut text_color_q| {
         let (children, optional_border_color) = button_q.get_mut(trigger.entity).unwrap();
 
         if let (Some(new_border_color,),Some(mut border_color)) = (optional_new_border_color,optional_border_color) {

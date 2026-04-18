@@ -42,9 +42,9 @@ pub fn build(mut commands: Commands) {
                                 TextFont::from_font_size(36.),
                             )],
                         ))
-                        .observe(on_click_levels)
-                        .observe(change_color_on_over(TEXT_HOVER_COLOR, None))
-                        .observe(change_color_on_out(TEXT_COLOR, None));
+                        .observe(on_event_update_ui_entity::<Over>(TEXT_HOVER_COLOR, None))
+                        .observe(on_event_update_ui_entity::<Out>(TEXT_COLOR, None))
+                        .observe(on_click_levels);
 
                     right_container
                         .spawn((
@@ -60,8 +60,8 @@ pub fn build(mut commands: Commands) {
                                 TextFont::from_font_size(36.),
                             )],
                         ))
-                        .observe(change_color_on_over(TEXT_HOVER_COLOR, None))
-                        .observe(change_color_on_out(TEXT_COLOR, None));
+                        .observe(on_event_update_ui_entity::<Over>(TEXT_HOVER_COLOR, None))
+                        .observe(on_event_update_ui_entity::<Out>(TEXT_COLOR, None));
 
                     right_container
                         .spawn((
@@ -77,17 +77,14 @@ pub fn build(mut commands: Commands) {
                                 TextFont::from_font_size(36.),
                             )],
                         ))
-                        .observe(on_click_quit_button)
-                        .observe(change_color_on_over(TEXT_HOVER_COLOR, None))
-                        .observe(change_color_on_out(TEXT_COLOR, None));
+                        .observe(on_event_update_ui_entity::<Over>(TEXT_HOVER_COLOR, None))
+                        .observe(on_event_update_ui_entity::<Out>(TEXT_COLOR, None))
+                        .observe(on_click_quit_button);
                 });
         });
 }
 
-fn on_click_levels(
-    _trigger: On<Pointer<Click>>,
-    mut page_state_set: ResMut<NextState<MenuPage>>,
-) {
+fn on_click_levels(_trigger: On<Pointer<Click>>, mut page_state_set: ResMut<NextState<MenuPage>>) {
     page_state_set.set(MenuPage::Levels);
 }
 

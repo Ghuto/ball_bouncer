@@ -42,8 +42,8 @@ pub fn build(mut commands: Commands) {
                                 TextFont::from_font_size(36.),
                             )],
                         ))
-                        .observe(change_color_on_over(TEXT_HOVER_COLOR, None))
-                        .observe(change_color_on_out(TEXT_COLOR, None));
+                        .observe(on_event_update_ui_entity::<Over>(TEXT_HOVER_COLOR, None))
+                        .observe(on_event_update_ui_entity::<Out>(TEXT_COLOR, None));
 
                     content_content
                         .spawn((
@@ -60,9 +60,9 @@ pub fn build(mut commands: Commands) {
                                 TextFont::from_font_size(36.),
                             )],
                         ))
-                        .observe(on_click_return)
-                        .observe(change_color_on_over(TEXT_HOVER_COLOR, None))
-                        .observe(change_color_on_out(TEXT_COLOR, None));
+                        .observe(on_event_update_ui_entity::<Over>(TEXT_HOVER_COLOR, None))
+                        .observe(on_event_update_ui_entity::<Out>(TEXT_COLOR, None))
+                        .observe(on_click_return);
                 });
 
             container
@@ -106,9 +106,9 @@ pub fn build(mut commands: Commands) {
                                 TextFont::from_font_size(36.),
                             )],
                         ))
-                        .observe(on_click_play_button)
-                        .observe(change_color_on_over(TEXT_HOVER_COLOR, None))
-                        .observe(change_color_on_out(TEXT_COLOR, None));
+                        .observe(on_event_update_ui_entity::<Over>(TEXT_HOVER_COLOR, None))
+                        .observe(on_event_update_ui_entity::<Out>(TEXT_COLOR, None))
+                        .observe(on_click_play_button);
                 });
         });
 }

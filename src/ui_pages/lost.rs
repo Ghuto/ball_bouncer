@@ -65,11 +65,8 @@ pub fn build(mut commands: Commands) {
                                 TextFont::default().with_font_size(30.),
                             ));
                         })
-                        .observe(change_color_on_over(
-                            TEXT_HOVER_COLOR,
-                            Some(BORDER_HOVER_COLOR),
-                        ))
-                        .observe(change_color_on_out(TEXT_COLOR, Some(BORDER_COLOR)))
+                        .observe(on_event_update_ui_entity::<Over>(TEXT_HOVER_COLOR, None))
+                        .observe(on_event_update_ui_entity::<Out>(TEXT_COLOR, None))
                         .observe(on_click_go_to_main_menu_button);
 
                     top_container
@@ -92,11 +89,8 @@ pub fn build(mut commands: Commands) {
                                 TextFont::default().with_font_size(30.),
                             ));
                         })
-                        .observe(change_color_on_over(
-                            TEXT_HOVER_COLOR,
-                            Some(BORDER_HOVER_COLOR),
-                        ))
-                        .observe(change_color_on_out(TEXT_COLOR, Some(BORDER_COLOR)))
+                        .observe(on_event_update_ui_entity::<Over>(TEXT_HOVER_COLOR, None))
+                        .observe(on_event_update_ui_entity::<Out>(TEXT_COLOR, None))
                         .observe(on_click_restart_button);
                 });
         });
