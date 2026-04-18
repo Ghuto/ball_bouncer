@@ -135,13 +135,8 @@ pub struct GameOver;
 pub fn on_game_over(
     _: On<GameOver>,
     mut commands: Commands,
-    mut game_state: ResMut<NextState<GameState>>,
     mut page_state: ResMut<NextState<MenuPage>>,
-    entity_q: Query<Entity, With<RigidBody>>,
 ) {
-    game_state.set(GameState::Paused);
     page_state.set(MenuPage::Lose);
-    for entity in entity_q {
-        commands.entity(entity).insert(RigidBodyDisabled);
-    }
+    commands.trigger(PauseGame);
 }

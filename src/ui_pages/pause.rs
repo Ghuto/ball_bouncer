@@ -65,8 +65,14 @@ pub fn build(mut commands: Commands) {
                                 TextFont::default().with_font_size(30.),
                             ));
                         })
-                        .observe(on_event_update_ui_entity::<Over>(TEXT_HOVER_COLOR, Some(BORDER_HOVER_COLOR)))
-                        .observe(on_event_update_ui_entity::<Out>(TEXT_COLOR, Some(BORDER_COLOR)))
+                        .observe(on_event_update_ui_entity::<Over>(
+                            TEXT_HOVER_COLOR,
+                            Some(BORDER_HOVER_COLOR),
+                        ))
+                        .observe(on_event_update_ui_entity::<Out>(
+                            TEXT_COLOR,
+                            Some(BORDER_COLOR),
+                        ))
                         .observe(on_click_go_to_main_menu_button);
 
                     top_container
@@ -89,14 +95,25 @@ pub fn build(mut commands: Commands) {
                                 TextFont::default().with_font_size(30.),
                             ));
                         })
-                        .observe(on_event_update_ui_entity::<Over>(TEXT_HOVER_COLOR, Some(BORDER_HOVER_COLOR)))
-                        .observe(on_event_update_ui_entity::<Out>(TEXT_COLOR, Some(BORDER_COLOR)))
+                        .observe(on_event_update_ui_entity::<Over>(
+                            TEXT_HOVER_COLOR,
+                            Some(BORDER_HOVER_COLOR),
+                        ))
+                        .observe(on_event_update_ui_entity::<Out>(
+                            TEXT_COLOR,
+                            Some(BORDER_COLOR),
+                        ))
                         .observe(on_click_resume_button);
                 });
         });
 }
 
-fn on_click_resume_button(_trigger: On<Pointer<Click>>, mut commands: Commands) {
+fn on_click_resume_button(
+    _trigger: On<Pointer<Click>>,
+    mut commands: Commands,
+    mut page_state: ResMut<NextState<MenuPage>>,
+) {
+    page_state.set(MenuPage::OverLay);
     commands.trigger(ResumeGame);
 }
 

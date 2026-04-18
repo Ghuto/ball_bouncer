@@ -26,12 +26,17 @@ pub fn build(mut commands: Commands) {
                         TextFont::from_font_size(36.),
                     ));
                 })
-                .observe(on_event_update_ui_entity::<Over>(TEXT_HOVER_COLOR,None))
-                .observe(on_event_update_ui_entity::<Out>(TEXT_COLOR,None))
+                .observe(on_event_update_ui_entity::<Over>(TEXT_HOVER_COLOR, None))
+                .observe(on_event_update_ui_entity::<Out>(TEXT_COLOR, None))
                 .observe(on_click_pause_button);
         });
 }
 
-fn on_click_pause_button(_trigger: On<Pointer<Click>>, mut commands: Commands) {
+fn on_click_pause_button(
+    _trigger: On<Pointer<Click>>,
+    mut commands: Commands,
+    mut page_state: ResMut<NextState<MenuPage>>,
+) {
+    page_state.set(MenuPage::Pause);
     commands.trigger(PauseGame);
 }
