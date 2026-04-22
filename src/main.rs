@@ -22,8 +22,8 @@ mod pause;
 mod playable_plane;
 mod ui_pages;
 
-const DEFAULT_WIDTH_RESOLUTION: u32 = 1920;
-const DEFAULT_HEIGHT_RESOLUTION: u32 = 1080;
+const DEFAULT_WIDTH_RESOLUTION: u32 = 1280;
+const DEFAULT_HEIGHT_RESOLUTION: u32 = 720;
 
 fn main() {
     let mut app = App::new();
@@ -50,7 +50,7 @@ fn main() {
         OnEnter(MainState::GamePlay),
         (
             trigger_event(SpawnPlayablePlane {
-                at_position: Vec3::new(0., 0., 0.),
+                at_position: Vec3::new(0., -250., 0.),
             }),
             trigger_event(SpawnBall {
                 at_position: Vec3::new(0., 50., 0.),
@@ -66,6 +66,7 @@ fn main() {
         ((
             watch_input_for_pause,
             control_playable_plane,
+            despawn_lost_balls,
             watch_game_over_condition,
         )
             .run_if(in_state(GameState::Running)),),
@@ -147,4 +148,10 @@ pub fn on_game_over(
 ) {
     page_state.set(MenuPage::Lose);
     commands.trigger(PauseGame);
+}
+
+pub fn watch_game_over_condition(mut commands: Commands, ball_q: Query<&Transform, With<Ball>>) {
+    if ball_q.is_empty() {
+        commands.trigger(GameOver);
+    }
 }

@@ -1,7 +1,7 @@
 use avian2d::prelude::*;
 use bevy::prelude::*;
 
-use crate::{GameOver, MainState};
+use crate::MainState;
 
 pub const BALL_RADIUS: f32 = 5.;
 pub const BALL_COLOR: Color = Color::Srgba(bevy::color::palettes::basic::WHITE);
@@ -47,12 +47,10 @@ pub fn spawn_ball(
     ));
 }
 
-pub fn watch_game_over_condition(mut commands: Commands,ball_q: Query<&Transform, With<Ball>>){
-
-    for transform in ball_q{
-        if transform.translation.y < 0.{
-            commands.trigger(GameOver);
+pub fn despawn_lost_balls(mut commands: Commands, ball_q: Query<(Entity,&Transform), With<Ball>>){
+    for (entity,transform) in ball_q {
+        if transform.translation.y < 0. {
+            commands.entity(entity).despawn();
         }
     }
-
 }
