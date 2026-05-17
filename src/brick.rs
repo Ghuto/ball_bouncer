@@ -10,7 +10,7 @@ const BRICK_COLOR: Color = bevy::prelude::Color::Srgba(tailwind::TEAL_400);
 #[derive(Component)]
 #[require(
     RigidBody::Static,
-    DespawnOnExit::<MainState>(MainState::GamePlay),
+    DespawnOnExit::<MainState>(MainState::Game),
     Collider::rectangle(BRICK_WIDTH, BRICK_HEIGHT),
     CollisionEventsEnabled,
 )]

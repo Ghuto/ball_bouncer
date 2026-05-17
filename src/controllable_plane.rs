@@ -14,43 +14,43 @@ pub const INPUT_RIGHT: [KeyCode; 2] = [KeyCode::ArrowLeft, KeyCode::KeyA];
 #[derive(Component)]
 #[require(
     TransformInterpolation,
-    DespawnOnExit::<MainState>(MainState::GamePlay),
+    DespawnOnExit::<MainState>(MainState::Game),
     Collider::rectangle(PLANE_WIDTH, PLANE_HEIGHT),
     LinearVelocity::ZERO,
     SweptCcd::default(),
     RigidBody::Kinematic,
 )]
-pub struct PlayablePlane;
+pub struct ControllablePlane;
 
 #[derive(Event, Clone)]
-pub struct SpawnPlayablePlane {
+pub struct SpawnControllablePlane {
     pub at_position: Vec3,
 }
 
-pub fn spawn_playable_plane(
-    trigger: On<SpawnPlayablePlane>,
+pub fn spawn_controllable_plane(
+    trigger: On<SpawnControllablePlane>,
     mut commands: Commands,
     mut meshes: ResMut<Assets<Mesh>>,
     mut materials: ResMut<Assets<ColorMaterial>>,
 ) {
     commands.spawn((
-        PlayablePlane,
+        ControllablePlane,
         Transform::from_translation(trigger.at_position),
         Mesh2d(meshes.add(Rectangle::new(PLANE_WIDTH, PLANE_HEIGHT))),
         MeshMaterial2d(materials.add(PLANE_COLOR)),
     ));
 }
 
-pub fn control_playable_plane(
+pub fn control_plane(
     input: Res<ButtonInput<KeyCode>>,
     time: Res<Time>,
-    playable_plane: Single<
+    controllable_plane: Single<
         (&mut Transform, &Collider, &mut LinearVelocity, Entity),
-        With<PlayablePlane>,
+        With<ControllablePlane>,
     >,
     move_and_slide: MoveAndSlide,
 ) {
-    let (mut transform, collider, mut linear_velocity, entity) = playable_plane.into_inner();
+    let (mut transform, collider, mut linear_velocity, entity) = controllable_plane.into_inner();
 
     // Adjust linear velocity based on input
     // for Avian's move and slide
@@ -65,7 +65,7 @@ pub fn control_playable_plane(
     }
 
     // Using Avian's move and slide. To handle kinematic
-    // body collisions. In case it hits a wall
+    // body collisions in case it hits a wall
     let MoveAndSlideOutput {
         position: new_position,
         projected_velocity: new_velocity,

@@ -5,7 +5,7 @@ use super::*;
 pub fn build(mut commands: Commands) {
     commands
         .spawn((
-            DespawnOnExit(MenuPage::Main),
+            DespawnOnExit(MenuPage::Title),
             Node {
                 width: Val::Percent(100.),
                 height: Val::Percent(100.),
@@ -40,10 +40,12 @@ pub fn build(mut commands: Commands) {
                                 Text::new("Levels"),
                                 TextColor(TEXT_COLOR),
                                 TextFont::from_font_size(36.),
+                                Pickable::IGNORE,
                             )],
                         ))
-                        .observe(on_event_update_ui_entity::<Over>(TEXT_HOVER_COLOR, None))
-                        .observe(on_event_update_ui_entity::<Out>(TEXT_COLOR, None))
+                        .observe(on_event_update_ui_entity::<Over>(TEXT_HOVER_COLOR))
+                        .observe(on_event_update_ui_entity::<Out>(TEXT_COLOR))
+                        .observe(on_hover_play_sound)
                         .observe(on_click_levels);
 
                     right_container
@@ -58,10 +60,12 @@ pub fn build(mut commands: Commands) {
                                 Text::new("Settings"),
                                 TextColor(TEXT_COLOR),
                                 TextFont::from_font_size(36.),
+                                Pickable::IGNORE,
                             )],
                         ))
-                        .observe(on_event_update_ui_entity::<Over>(TEXT_HOVER_COLOR, None))
-                        .observe(on_event_update_ui_entity::<Out>(TEXT_COLOR, None));
+                        .observe(on_event_update_ui_entity::<Over>(TEXT_HOVER_COLOR))
+                        .observe(on_event_update_ui_entity::<Out>(TEXT_COLOR))
+                        .observe(on_hover_play_sound);
 
                     right_container
                         .spawn((
@@ -75,17 +79,19 @@ pub fn build(mut commands: Commands) {
                                 Text::new("Quit"),
                                 TextColor(TEXT_COLOR),
                                 TextFont::from_font_size(36.),
+                                Pickable::IGNORE,
                             )],
                         ))
-                        .observe(on_event_update_ui_entity::<Over>(TEXT_HOVER_COLOR, None))
-                        .observe(on_event_update_ui_entity::<Out>(TEXT_COLOR, None))
+                        .observe(on_event_update_ui_entity::<Over>(TEXT_HOVER_COLOR))
+                        .observe(on_event_update_ui_entity::<Out>(TEXT_COLOR))
+                        .observe(on_hover_play_sound)
                         .observe(on_click_quit_button);
                 });
         });
 }
 
 fn on_click_levels(_trigger: On<Pointer<Click>>, mut page_state_set: ResMut<NextState<MenuPage>>) {
-    page_state_set.set(MenuPage::Levels);
+    page_state_set.set(MenuPage::LevelSelect);
 }
 
 fn on_click_quit_button(
