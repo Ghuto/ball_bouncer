@@ -20,7 +20,7 @@ pub fn spawn_border(
     let bottom = -half_window_height;
 
     commands.spawn((
-        DespawnOnExit(MainState::GamePlay),
+        DespawnOnExit(MainState::Game),
         RigidBody::Static,
         Collider::polyline(
             vec![
