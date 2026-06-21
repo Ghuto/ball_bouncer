@@ -1,26 +1,46 @@
-use std::fmt::Debug;
-
-use crate::game_state::MainState;
 use crate::general_events::*;
 use crate::sounds::*;
+use crate::ui_pages::buttons::*;
+use crate::ui_pages::templates::*;
 use bevy::color::palettes::tailwind;
 use bevy::prelude::*;
 
 pub const BORDER_COLOR: Color = Color::Srgba(tailwind::GRAY_700);
 pub const TEXT_COLOR: Color = Color::Srgba(tailwind::SLATE_400);
 pub const TEXT_HOVER_COLOR: Color = Color::Srgba(tailwind::SLATE_100);
-pub const BACKGROUND_COLOR: Color = Color::Srgba(tailwind::ZINC_800);
 
 pub const INFO_COLOR: Color = Color::Srgba(tailwind::YELLOW_200);
 pub const DANGER_COLOR: Color = Color::Srgba(tailwind::RED_500);
 pub const SUCCESS_COLOR: Color = Color::Srgba(tailwind::GREEN_500);
 
-pub mod page_level_completed;
-pub mod page_level_failed;
-pub mod page_level_paused;
-pub mod page_level_select;
-pub mod page_overlay;
-pub mod page_title;
+pub const fn background_color(alpha: f32) -> Color {
+    Color::Srgba(Srgba::new(
+        tailwind::ZINC_800.red,
+        tailwind::ZINC_800.green,
+        tailwind::ZINC_800.blue,
+        alpha,
+    ))
+}
+
+pub mod buttons;
+pub mod templates;
+
+pub struct UIPlugin;
+
+impl Plugin for UIPlugin {
+    fn build(&self, app: &mut App) {
+        app.init_state::<MenuPage>()
+            .add_systems(OnEnter(MenuPage::Title), title_page.spawn())
+            .add_systems(OnEnter(MenuPage::Overlay), overlay_page.spawn())
+            .add_systems(
+                OnEnter(MenuPage::LevelSelection),
+                level_selection_page.spawn(),
+            )
+            .add_systems(OnEnter(MenuPage::LevelFailed), build)
+            .add_systems(OnEnter(MenuPage::LevelPaused), build)
+            .add_systems(OnEnter(MenuPage::LevelComplete), build);
+    }
+}
 
 #[derive(States, Default, Debug, Clone, PartialEq, Eq, Hash, Reflect)]
 pub enum MenuPage {
@@ -29,37 +49,28 @@ pub enum MenuPage {
     Overlay,
     LevelFailed,
     LevelPaused,
-    LevelSelect,
+    LevelSelection,
     LevelComplete,
 }
 
-fn on_click_restart_button(_trigger: On<Pointer<Click>>, mut commands: Commands) {
-    commands.trigger(LevelRestart);
-}
-
-fn on_click_go_to_main_menu_button(
-    _trigger: On<Pointer<Click>>,
-    mut game_state: ResMut<NextState<MainState>>,
-    mut page_state: ResMut<NextState<MenuPage>>,
-) {
-    game_state.set(MainState::Title);
-    page_state.set(MenuPage::Title);
-}
-
-fn on_hover_play_sound(_: On<Pointer<Over>>, mut command: Commands) {
-    command.trigger(PlaySoundEffect(SoundEffect::MenuHover));
-}
-
-fn on_event_update_ui_entity<Event: Debug + Clone + Reflect>(
-    new_text_color: Color,
-) -> impl Fn(On<Pointer<Event>>, Query<&Children>, Query<&mut TextColor>) {
-    move |trigger, mut button_q, mut text_color_q| {
-        let children = button_q.get_mut(trigger.entity).unwrap();
-
-        for child in children {
-            if let Ok(mut text_color) = text_color_q.get_mut(*child) {
-                text_color.0 = new_text_color;
-            }
-        }
-    }
+/// a workaround because spawning scenes with parameters in add_systems is not possible
+pub fn build(mut commands: Commands, menu_page_state: Res<State<MenuPage>>) {
+    match menu_page_state.get() {
+        MenuPage::LevelFailed => commands.spawn_scene(level_status_page(
+            "Game Over",
+            DANGER_COLOR,
+            bsn_list![restart_button(), main_menu_button(),],
+        )),
+        MenuPage::LevelPaused => commands.spawn_scene(level_status_page(
+            "Paused",
+            INFO_COLOR,
+            bsn_list![resume_button(), restart_button(), main_menu_button(),],
+        )),
+        MenuPage::LevelComplete => commands.spawn_scene(level_status_page(
+            "Level Complete",
+            SUCCESS_COLOR,
+            bsn_list![restart_button(), main_menu_button(),],
+        )),
+        _ => return,
+    };
 }

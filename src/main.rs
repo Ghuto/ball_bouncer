@@ -14,7 +14,7 @@ use crate::controllable_plane::*;
 use crate::game_state::*;
 use crate::general_events::*;
 use crate::sounds::*;
-use crate::ui_pages::*;
+use crate::ui_pages::UIPlugin;
 
 mod ball;
 mod border;
@@ -41,24 +41,28 @@ fn main() {
                     DEFAULT_HEIGHT_RESOLUTION,
                 ),
                 fit_canvas_to_parent: true,
+                present_mode: bevy::window::PresentMode::AutoVsync,
                 ..Default::default()
             }),
             ..Default::default()
         }),
         PhysicsPlugins::default(),
         StatePlugin,
+        UIPlugin,
     ))
     .add_systems(Startup, (spawn_camera, load_sound_effects))
     .add_systems(
-        Update,
+        FixedUpdate,
         (
-            watch_input_for_pause,
-            control_plane,
             despawn_lost_balls,
             watch_game_over_condition,
             watch_win_condition,
         )
             .run_if(in_state(GameState::Running)),
+    )
+    .add_systems(
+        Update,
+        (watch_input_for_pause, control_plane).run_if(in_state(GameState::Running)),
     )
     .add_systems(
         OnEnter(MainState::Game),
@@ -74,16 +78,6 @@ fn main() {
             }),
             trigger_event(SpawnBorder),
         ),
-    )
-    .init_state::<MenuPage>()
-    .add_systems(OnEnter(MenuPage::Title), ui_pages::page_title::build)
-    .add_systems(OnEnter(MenuPage::Overlay), page_overlay::build)
-    .add_systems(OnEnter(MenuPage::LevelFailed), page_level_failed::build)
-    .add_systems(OnEnter(MenuPage::LevelPaused), page_level_paused::build)
-    .add_systems(OnEnter(MenuPage::LevelSelect), page_level_select::build)
-    .add_systems(
-        OnEnter(MenuPage::LevelComplete),
-        page_level_completed::build,
     )
     .add_observer(spawn_controllable_plane)
     .add_observer(spawn_ball)
