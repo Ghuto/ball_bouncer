@@ -14,7 +14,7 @@ pub fn on_level_failed(
     mut page_state: ResMut<NextState<MenuPage>>,
 ) {
     game_state.set(GameState::Stopped);
-    page_state.set(MenuPage::LevelPaused);
+    page_state.set(MenuPage::LevelFailed);
 }
 
 #[derive(Event)]

@@ -11,7 +11,7 @@ pub const PLANE_COLOR: Color = Color::Srgba(bevy::color::palettes::basic::BLACK)
 pub const INPUT_LEFT: [KeyCode; 2] = [KeyCode::ArrowRight, KeyCode::KeyD];
 pub const INPUT_RIGHT: [KeyCode; 2] = [KeyCode::ArrowLeft, KeyCode::KeyA];
 
-#[derive(Component)]
+#[derive(Component, Clone, Default)]
 #[require(
     TransformInterpolation,
     DespawnOnExit::<MainState>(MainState::Game),
@@ -27,17 +27,14 @@ pub struct SpawnControllablePlane {
     pub at_position: Vec3,
 }
 
-pub fn spawn_controllable_plane(
-    trigger: On<SpawnControllablePlane>,
-    mut commands: Commands,
-    mut meshes: ResMut<Assets<Mesh>>,
-    mut materials: ResMut<Assets<ColorMaterial>>,
-) {
-    commands.spawn((
-        ControllablePlane,
-        Transform::from_translation(trigger.at_position),
-        Mesh2d(meshes.add(Rectangle::new(PLANE_WIDTH, PLANE_HEIGHT))),
-        MeshMaterial2d(materials.add(PLANE_COLOR)),
+pub fn spawn_controllable_plane(trigger: On<SpawnControllablePlane>, mut commands: Commands) {
+    let position = trigger.at_position;
+
+    commands.spawn_scene(bsn!(
+        ControllablePlane
+        Transform {translation: position}
+        Mesh2d(asset_value(Rectangle::new(PLANE_WIDTH, PLANE_HEIGHT)))
+        MeshMaterial2d::<ColorMaterial>(asset_value(PLANE_COLOR))
     ));
 }
 

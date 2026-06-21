@@ -7,7 +7,7 @@ const BRICK_WIDTH: f32 = 30.;
 const BRICK_HEIGHT: f32 = 20.;
 const BRICK_COLOR: Color = bevy::prelude::Color::Srgba(tailwind::TEAL_400);
 
-#[derive(Component)]
+#[derive(Component, Clone, Default)]
 #[require(
     RigidBody::Static,
     DespawnOnExit::<MainState>(MainState::Game),
@@ -21,22 +21,17 @@ pub struct SpawnBrick {
     pub at_position: Vec3,
 }
 
-pub fn on_spawn_brick(
-    trigger: On<SpawnBrick>,
-    mut commands: Commands,
-    mut meshes: ResMut<Assets<Mesh>>,
-    mut materials: ResMut<Assets<ColorMaterial>>,
-) {
-    commands
-        .spawn((
-            Brick,
-            Transform::from_translation(trigger.at_position),
-            Mesh2d(meshes.add(Rectangle::new(BRICK_WIDTH, BRICK_HEIGHT))),
-            MeshMaterial2d(materials.add(BRICK_COLOR)),
-        ))
-        .observe(on_collision_end);
-}
+pub fn on_spawn_brick(trigger: On<SpawnBrick>, mut commands: Commands) {
+    let position = trigger.at_position;
 
-fn on_collision_end(trigger: On<CollisionEnd>, mut commands: Commands) {
-    commands.entity(trigger.collider1).despawn();
+    commands.spawn_scene(bsn! {
+        Brick
+        Transform {translation: position}
+        Mesh2d(asset_value(Rectangle::new(BRICK_WIDTH, BRICK_HEIGHT)))
+        MeshMaterial2d::<ColorMaterial>(asset_value(BRICK_COLOR))
+        // destroying brick
+        on(|trigger: On<CollisionEnd>, mut commands: Commands|{
+            commands.entity(trigger.collider1).despawn();
+        })
+    });
 }
