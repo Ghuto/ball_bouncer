@@ -1,0 +1,845 @@
+(
+  resources: {},
+  entities: {
+    4294966566: (
+      components: {
+        "ball_bouncer::brick::Brick": (),
+        "bevy_transform::components::transform::Transform": (
+          translation: (400.0, 11.0, 0.0),
+          rotation: (0.0, 0.0, -0.0, 1.0),
+          scale: (1.0, 1.0, 1.0),
+        ),
+      },
+    ),
+    4294966568: (
+      components: {
+        "ball_bouncer::brick::Brick": (),
+        "bevy_transform::components::transform::Transform": (
+          translation: (368.0, 11.0, 0.0),
+          rotation: (0.0, 0.0, -0.0, 1.0),
+          scale: (1.0, 1.0, 1.0),
+        ),
+      },
+    ),
+    4294966570: (
+      components: {
+        "ball_bouncer::brick::Brick": (),
+        "bevy_transform::components::transform::Transform": (
+          translation: (-304.0, 297.0, 0.0),
+          rotation: (0.0, 0.0, -0.0, 1.0),
+          scale: (1.0, 1.0, 1.0),
+        ),
+      },
+    ),
+    4294966572: (
+      components: {
+        "ball_bouncer::brick::Brick": (),
+        "bevy_transform::components::transform::Transform": (
+          translation: (-272.0, 275.0, 0.0),
+          rotation: (0.0, 0.0, -0.0, 1.0),
+          scale: (1.0, 1.0, 1.0),
+        ),
+      },
+    ),
+    4294966574: (
+      components: {
+        "ball_bouncer::brick::Brick": (),
+        "bevy_transform::components::transform::Transform": (
+          translation: (-272.0, 253.0, 0.0),
+          rotation: (0.0, 0.0, -0.0, 1.0),
+          scale: (1.0, 1.0, 1.0),
+        ),
+      },
+    ),
+    4294966576: (
+      components: {
+        "ball_bouncer::brick::Brick": (),
+        "bevy_transform::components::transform::Transform": (
+          translation: (-304.0, 231.0, 0.0),
+          rotation: (0.0, 0.0, -0.0, 1.0),
+          scale: (1.0, 1.0, 1.0),
+        ),
+      },
+    ),
+    4294966578: (
+      components: {
+        "ball_bouncer::brick::Brick": (),
+        "bevy_transform::components::transform::Transform": (
+          translation: (-368.0, 297.0, 0.0),
+          rotation: (0.0, 0.0, -0.0, 1.0),
+          scale: (1.0, 1.0, 1.0),
+        ),
+      },
+    ),
+    4294966580: (
+      components: {
+        "ball_bouncer::brick::Brick": (),
+        "bevy_transform::components::transform::Transform": (
+          translation: (-336.0, 297.0, 0.0),
+          rotation: (0.0, 0.0, -0.0, 1.0),
+          scale: (1.0, 1.0, 1.0),
+        ),
+      },
+    ),
+    4294966582: (
+      components: {
+        "ball_bouncer::brick::Brick": (),
+        "bevy_transform::components::transform::Transform": (
+          translation: (-336.0, 275.0, 0.0),
+          rotation: (0.0, 0.0, -0.0, 1.0),
+          scale: (1.0, 1.0, 1.0),
+        ),
+      },
+    ),
+    4294966584: (
+      components: {
+        "ball_bouncer::brick::Brick": (),
+        "bevy_transform::components::transform::Transform": (
+          translation: (-304.0, 275.0, 0.0),
+          rotation: (0.0, 0.0, -0.0, 1.0),
+          scale: (1.0, 1.0, 1.0),
+        ),
+      },
+    ),
+    4294966586: (
+      components: {
+        "ball_bouncer::brick::Brick": (),
+        "bevy_transform::components::transform::Transform": (
+          translation: (-304.0, 253.0, 0.0),
+          rotation: (0.0, 0.0, -0.0, 1.0),
+          scale: (1.0, 1.0, 1.0),
+        ),
+      },
+    ),
+    4294966588: (
+      components: {
+        "ball_bouncer::brick::Brick": (),
+        "bevy_transform::components::transform::Transform": (
+          translation: (-336.0, 253.0, 0.0),
+          rotation: (0.0, 0.0, -0.0, 1.0),
+          scale: (1.0, 1.0, 1.0),
+        ),
+      },
+    ),
+    4294966590: (
+      components: {
+        "ball_bouncer::brick::Brick": (),
+        "bevy_transform::components::transform::Transform": (
+          translation: (-336.0, 231.0, 0.0),
+          rotation: (0.0, 0.0, -0.0, 1.0),
+          scale: (1.0, 1.0, 1.0),
+        ),
+      },
+    ),
+    4294966592: (
+      components: {
+        "ball_bouncer::brick::Brick": (),
+        "bevy_transform::components::transform::Transform": (
+          translation: (-368.0, 231.0, 0.0),
+          rotation: (0.0, 0.0, -0.0, 1.0),
+          scale: (1.0, 1.0, 1.0),
+        ),
+      },
+    ),
+    4294966594: (
+      components: {
+        "ball_bouncer::brick::Brick": (),
+        "bevy_transform::components::transform::Transform": (
+          translation: (-368.0, 253.0, 0.0),
+          rotation: (0.0, 0.0, -0.0, 1.0),
+          scale: (1.0, 1.0, 1.0),
+        ),
+      },
+    ),
+    4294966596: (
+      components: {
+        "ball_bouncer::brick::Brick": (),
+        "bevy_transform::components::transform::Transform": (
+          translation: (-368.0, 275.0, 0.0),
+          rotation: (0.0, 0.0, -0.0, 1.0),
+          scale: (1.0, 1.0, 1.0),
+        ),
+      },
+    ),
+    4294966598: (
+      components: {
+        "ball_bouncer::brick::Brick": (),
+        "bevy_transform::components::transform::Transform": (
+          translation: (400.0, 99.0, 0.0),
+          rotation: (0.0, 0.0, -0.0, 1.0),
+          scale: (1.0, 1.0, 1.0),
+        ),
+      },
+    ),
+    4294966600: (
+      components: {
+        "ball_bouncer::brick::Brick": (),
+        "bevy_transform::components::transform::Transform": (
+          translation: (336.0, 11.0, 0.0),
+          rotation: (0.0, 0.0, -0.0, 1.0),
+          scale: (1.0, 1.0, 1.0),
+        ),
+      },
+    ),
+    4294966602: (
+      components: {
+        "ball_bouncer::brick::Brick": (),
+        "bevy_transform::components::transform::Transform": (
+          translation: (304.0, 11.0, 0.0),
+          rotation: (0.0, 0.0, -0.0, 1.0),
+          scale: (1.0, 1.0, 1.0),
+        ),
+      },
+    ),
+    4294966604: (
+      components: {
+        "ball_bouncer::brick::Brick": (),
+        "bevy_transform::components::transform::Transform": (
+          translation: (272.0, 33.0, 0.0),
+          rotation: (0.0, 0.0, -0.0, 1.0),
+          scale: (1.0, 1.0, 1.0),
+        ),
+      },
+    ),
+    4294966606: (
+      components: {
+        "ball_bouncer::brick::Brick": (),
+        "bevy_transform::components::transform::Transform": (
+          translation: (368.0, 99.0, 0.0),
+          rotation: (0.0, 0.0, -0.0, 1.0),
+          scale: (1.0, 1.0, 1.0),
+        ),
+      },
+    ),
+    4294966608: (
+      components: {
+        "ball_bouncer::brick::Brick": (),
+        "bevy_transform::components::transform::Transform": (
+          translation: (400.0, 77.0, 0.0),
+          rotation: (0.0, 0.0, -0.0, 1.0),
+          scale: (1.0, 1.0, 1.0),
+        ),
+      },
+    ),
+    4294966610: (
+      components: {
+        "ball_bouncer::brick::Brick": (),
+        "bevy_transform::components::transform::Transform": (
+          translation: (336.0, 33.0, 0.0),
+          rotation: (0.0, 0.0, -0.0, 1.0),
+          scale: (1.0, 1.0, 1.0),
+        ),
+      },
+    ),
+    4294966612: (
+      components: {
+        "ball_bouncer::brick::Brick": (),
+        "bevy_transform::components::transform::Transform": (
+          translation: (272.0, 77.0, 0.0),
+          rotation: (0.0, 0.0, -0.0, 1.0),
+          scale: (1.0, 1.0, 1.0),
+        ),
+      },
+    ),
+    4294966614: (
+      components: {
+        "ball_bouncer::brick::Brick": (),
+        "bevy_transform::components::transform::Transform": (
+          translation: (336.0, 99.0, 0.0),
+          rotation: (0.0, 0.0, -0.0, 1.0),
+          scale: (1.0, 1.0, 1.0),
+        ),
+      },
+    ),
+    4294966616: (
+      components: {
+        "ball_bouncer::brick::Brick": (),
+        "bevy_transform::components::transform::Transform": (
+          translation: (304.0, 33.0, 0.0),
+          rotation: (0.0, 0.0, -0.0, 1.0),
+          scale: (1.0, 1.0, 1.0),
+        ),
+      },
+    ),
+    4294966618: (
+      components: {
+        "ball_bouncer::brick::Brick": (),
+        "bevy_transform::components::transform::Transform": (
+          translation: (272.0, 55.0, 0.0),
+          rotation: (0.0, 0.0, -0.0, 1.0),
+          scale: (1.0, 1.0, 1.0),
+        ),
+      },
+    ),
+    4294966620: (
+      components: {
+        "ball_bouncer::brick::Brick": (),
+        "bevy_transform::components::transform::Transform": (
+          translation: (304.0, 55.0, 0.0),
+          rotation: (0.0, 0.0, -0.0, 1.0),
+          scale: (1.0, 1.0, 1.0),
+        ),
+      },
+    ),
+    4294966622: (
+      components: {
+        "ball_bouncer::brick::Brick": (),
+        "bevy_transform::components::transform::Transform": (
+          translation: (368.0, 77.0, 0.0),
+          rotation: (0.0, 0.0, -0.0, 1.0),
+          scale: (1.0, 1.0, 1.0),
+        ),
+      },
+    ),
+    4294966624: (
+      components: {
+        "ball_bouncer::brick::Brick": (),
+        "bevy_transform::components::transform::Transform": (
+          translation: (400.0, 55.0, 0.0),
+          rotation: (0.0, 0.0, -0.0, 1.0),
+          scale: (1.0, 1.0, 1.0),
+        ),
+      },
+    ),
+    4294966626: (
+      components: {
+        "ball_bouncer::brick::Brick": (),
+        "bevy_transform::components::transform::Transform": (
+          translation: (432.0, 55.0, 0.0),
+          rotation: (0.0, 0.0, -0.0, 1.0),
+          scale: (1.0, 1.0, 1.0),
+        ),
+      },
+    ),
+    4294966628: (
+      components: {
+        "ball_bouncer::brick::Brick": (),
+        "bevy_transform::components::transform::Transform": (
+          translation: (432.0, 33.0, 0.0),
+          rotation: (0.0, 0.0, -0.0, 1.0),
+          scale: (1.0, 1.0, 1.0),
+        ),
+      },
+    ),
+    4294966630: (
+      components: {
+        "ball_bouncer::brick::Brick": (),
+        "bevy_transform::components::transform::Transform": (
+          translation: (400.0, 33.0, 0.0),
+          rotation: (0.0, 0.0, -0.0, 1.0),
+          scale: (1.0, 1.0, 1.0),
+        ),
+      },
+    ),
+    4294966632: (
+      components: {
+        "ball_bouncer::brick::Brick": (),
+        "bevy_transform::components::transform::Transform": (
+          translation: (368.0, 33.0, 0.0),
+          rotation: (0.0, 0.0, -0.0, 1.0),
+          scale: (1.0, 1.0, 1.0),
+        ),
+      },
+    ),
+    4294966634: (
+      components: {
+        "ball_bouncer::brick::Brick": (),
+        "bevy_transform::components::transform::Transform": (
+          translation: (368.0, 55.0, 0.0),
+          rotation: (0.0, 0.0, -0.0, 1.0),
+          scale: (1.0, 1.0, 1.0),
+        ),
+      },
+    ),
+    4294966636: (
+      components: {
+        "ball_bouncer::brick::Brick": (),
+        "bevy_transform::components::transform::Transform": (
+          translation: (336.0, 55.0, 0.0),
+          rotation: (0.0, 0.0, -0.0, 1.0),
+          scale: (1.0, 1.0, 1.0),
+        ),
+      },
+    ),
+    4294966638: (
+      components: {
+        "ball_bouncer::brick::Brick": (),
+        "bevy_transform::components::transform::Transform": (
+          translation: (336.0, 77.0, 0.0),
+          rotation: (0.0, 0.0, -0.0, 1.0),
+          scale: (1.0, 1.0, 1.0),
+        ),
+      },
+    ),
+    4294966640: (
+      components: {
+        "ball_bouncer::brick::Brick": (),
+        "bevy_transform::components::transform::Transform": (
+          translation: (304.0, 77.0, 0.0),
+          rotation: (0.0, 0.0, -0.0, 1.0),
+          scale: (1.0, 1.0, 1.0),
+        ),
+      },
+    ),
+    4294966642: (
+      components: {
+        "ball_bouncer::brick::Brick": (),
+        "bevy_transform::components::transform::Transform": (
+          translation: (304.0, 99.0, 0.0),
+          rotation: (0.0, 0.0, -0.0, 1.0),
+          scale: (1.0, 1.0, 1.0),
+        ),
+      },
+    ),
+    4294966644: (
+      components: {
+        "ball_bouncer::brick::Brick": (),
+        "bevy_transform::components::transform::Transform": (
+          translation: (272.0, 99.0, 0.0),
+          rotation: (0.0, 0.0, -0.0, 1.0),
+          scale: (1.0, 1.0, 1.0),
+        ),
+      },
+    ),
+    4294966646: (
+      components: {
+        "ball_bouncer::brick::Brick": (),
+        "bevy_transform::components::transform::Transform": (
+          translation: (272.0, 121.0, 0.0),
+          rotation: (0.0, 0.0, -0.0, 1.0),
+          scale: (1.0, 1.0, 1.0),
+        ),
+      },
+    ),
+    4294966648: (
+      components: {
+        "ball_bouncer::brick::Brick": (),
+        "bevy_transform::components::transform::Transform": (
+          translation: (240.0, 121.0, 0.0),
+          rotation: (0.0, 0.0, -0.0, 1.0),
+          scale: (1.0, 1.0, 1.0),
+        ),
+      },
+    ),
+    4294966650: (
+      components: {
+        "ball_bouncer::brick::Brick": (),
+        "bevy_transform::components::transform::Transform": (
+          translation: (240.0, 143.0, 0.0),
+          rotation: (0.0, 0.0, -0.0, 1.0),
+          scale: (1.0, 1.0, 1.0),
+        ),
+      },
+    ),
+    4294966652: (
+      components: {
+        "ball_bouncer::brick::Brick": (),
+        "bevy_transform::components::transform::Transform": (
+          translation: (208.0, 143.0, 0.0),
+          rotation: (0.0, 0.0, -0.0, 1.0),
+          scale: (1.0, 1.0, 1.0),
+        ),
+      },
+    ),
+    4294966654: (
+      components: {
+        "ball_bouncer::brick::Brick": (),
+        "bevy_transform::components::transform::Transform": (
+          translation: (208.0, 165.0, 0.0),
+          rotation: (0.0, 0.0, -0.0, 1.0),
+          scale: (1.0, 1.0, 1.0),
+        ),
+      },
+    ),
+    4294966656: (
+      components: {
+        "ball_bouncer::brick::Brick": (),
+        "bevy_transform::components::transform::Transform": (
+          translation: (176.0, 165.0, 0.0),
+          rotation: (0.0, 0.0, -0.0, 1.0),
+          scale: (1.0, 1.0, 1.0),
+        ),
+      },
+    ),
+    4294966658: (
+      components: {
+        "ball_bouncer::brick::Brick": (),
+        "bevy_transform::components::transform::Transform": (
+          translation: (176.0, 187.0, 0.0),
+          rotation: (0.0, 0.0, -0.0, 1.0),
+          scale: (1.0, 1.0, 1.0),
+        ),
+      },
+    ),
+    4294966660: (
+      components: {
+        "ball_bouncer::brick::Brick": (),
+        "bevy_transform::components::transform::Transform": (
+          translation: (144.0, 187.0, 0.0),
+          rotation: (0.0, 0.0, -0.0, 1.0),
+          scale: (1.0, 1.0, 1.0),
+        ),
+      },
+    ),
+    4294966662: (
+      components: {
+        "ball_bouncer::brick::Brick": (),
+        "bevy_transform::components::transform::Transform": (
+          translation: (112.0, 187.0, 0.0),
+          rotation: (0.0, 0.0, -0.0, 1.0),
+          scale: (1.0, 1.0, 1.0),
+        ),
+      },
+    ),
+    4294966664: (
+      components: {
+        "ball_bouncer::brick::Brick": (),
+        "bevy_transform::components::transform::Transform": (
+          translation: (80.0, 187.0, 0.0),
+          rotation: (0.0, 0.0, -0.0, 1.0),
+          scale: (1.0, 1.0, 1.0),
+        ),
+      },
+    ),
+    4294966666: (
+      components: {
+        "ball_bouncer::brick::Brick": (),
+        "bevy_transform::components::transform::Transform": (
+          translation: (48.0, 187.0, 0.0),
+          rotation: (0.0, 0.0, -0.0, 1.0),
+          scale: (1.0, 1.0, 1.0),
+        ),
+      },
+    ),
+    4294966668: (
+      components: {
+        "ball_bouncer::brick::Brick": (),
+        "bevy_transform::components::transform::Transform": (
+          translation: (16.0, 187.0, 0.0),
+          rotation: (0.0, 0.0, -0.0, 1.0),
+          scale: (1.0, 1.0, 1.0),
+        ),
+      },
+    ),
+    4294966670: (
+      components: {
+        "ball_bouncer::brick::Brick": (),
+        "bevy_transform::components::transform::Transform": (
+          translation: (-16.0, 165.0, 0.0),
+          rotation: (0.0, 0.0, -0.0, 1.0),
+          scale: (1.0, 1.0, 1.0),
+        ),
+      },
+    ),
+    4294966672: (
+      components: {
+        "ball_bouncer::brick::Brick": (),
+        "bevy_transform::components::transform::Transform": (
+          translation: (-48.0, 165.0, 0.0),
+          rotation: (0.0, 0.0, -0.0, 1.0),
+          scale: (1.0, 1.0, 1.0),
+        ),
+      },
+    ),
+    4294966674: (
+      components: {
+        "ball_bouncer::brick::Brick": (),
+        "bevy_transform::components::transform::Transform": (
+          translation: (-80.0, 165.0, 0.0),
+          rotation: (0.0, 0.0, -0.0, 1.0),
+          scale: (1.0, 1.0, 1.0),
+        ),
+      },
+    ),
+    4294966676: (
+      components: {
+        "ball_bouncer::brick::Brick": (),
+        "bevy_transform::components::transform::Transform": (
+          translation: (-112.0, 165.0, 0.0),
+          rotation: (0.0, 0.0, -0.0, 1.0),
+          scale: (1.0, 1.0, 1.0),
+        ),
+      },
+    ),
+    4294966678: (
+      components: {
+        "ball_bouncer::brick::Brick": (),
+        "bevy_transform::components::transform::Transform": (
+          translation: (-144.0, 165.0, 0.0),
+          rotation: (0.0, 0.0, -0.0, 1.0),
+          scale: (1.0, 1.0, 1.0),
+        ),
+      },
+    ),
+    4294966680: (
+      components: {
+        "ball_bouncer::brick::Brick": (),
+        "bevy_transform::components::transform::Transform": (
+          translation: (-208.0, 143.0, 0.0),
+          rotation: (0.0, 0.0, -0.0, 1.0),
+          scale: (1.0, 1.0, 1.0),
+        ),
+      },
+    ),
+    4294966682: (
+      components: {
+        "ball_bouncer::brick::Brick": (),
+        "bevy_transform::components::transform::Transform": (
+          translation: (-304.0, 143.0, 0.0),
+          rotation: (0.0, 0.0, -0.0, 1.0),
+          scale: (1.0, 1.0, 1.0),
+        ),
+      },
+    ),
+    4294966684: (
+      components: {
+        "ball_bouncer::brick::Brick": (),
+        "bevy_transform::components::transform::Transform": (
+          translation: (-336.0, 121.0, 0.0),
+          rotation: (0.0, 0.0, -0.0, 1.0),
+          scale: (1.0, 1.0, 1.0),
+        ),
+      },
+    ),
+    4294966686: (
+      components: {
+        "ball_bouncer::brick::Brick": (),
+        "bevy_transform::components::transform::Transform": (
+          translation: (-368.0, 121.0, 0.0),
+          rotation: (0.0, 0.0, -0.0, 1.0),
+          scale: (1.0, 1.0, 1.0),
+        ),
+      },
+    ),
+    4294966688: (
+      components: {
+        "ball_bouncer::brick::Brick": (),
+        "bevy_transform::components::transform::Transform": (
+          translation: (-336.0, 77.0, 0.0),
+          rotation: (0.0, 0.0, -0.0, 1.0),
+          scale: (1.0, 1.0, 1.0),
+        ),
+      },
+    ),
+    4294966690: (
+      components: {
+        "ball_bouncer::brick::Brick": (),
+        "bevy_transform::components::transform::Transform": (
+          translation: (-368.0, 99.0, 0.0),
+          rotation: (0.0, 0.0, -0.0, 1.0),
+          scale: (1.0, 1.0, 1.0),
+        ),
+      },
+    ),
+    4294966692: (
+      components: {
+        "ball_bouncer::brick::Brick": (),
+        "bevy_transform::components::transform::Transform": (
+          translation: (-400.0, 99.0, 0.0),
+          rotation: (0.0, 0.0, -0.0, 1.0),
+          scale: (1.0, 1.0, 1.0),
+        ),
+      },
+    ),
+    4294966694: (
+      components: {
+        "ball_bouncer::brick::Brick": (),
+        "bevy_transform::components::transform::Transform": (
+          translation: (-400.0, 121.0, 0.0),
+          rotation: (0.0, 0.0, -0.0, 1.0),
+          scale: (1.0, 1.0, 1.0),
+        ),
+      },
+    ),
+    4294966696: (
+      components: {
+        "ball_bouncer::brick::Brick": (),
+        "bevy_transform::components::transform::Transform": (
+          translation: (-432.0, 121.0, 0.0),
+          rotation: (0.0, 0.0, -0.0, 1.0),
+          scale: (1.0, 1.0, 1.0),
+        ),
+      },
+    ),
+    4294966698: (
+      components: {
+        "ball_bouncer::brick::Brick": (),
+        "bevy_transform::components::transform::Transform": (
+          translation: (-464.0, 121.0, 0.0),
+          rotation: (0.0, 0.0, -0.0, 1.0),
+          scale: (1.0, 1.0, 1.0),
+        ),
+      },
+    ),
+    4294966700: (
+      components: {
+        "ball_bouncer::brick::Brick": (),
+        "bevy_transform::components::transform::Transform": (
+          translation: (-464.0, 99.0, 0.0),
+          rotation: (0.0, 0.0, -0.0, 1.0),
+          scale: (1.0, 1.0, 1.0),
+        ),
+      },
+    ),
+    4294966702: (
+      components: {
+        "ball_bouncer::brick::Brick": (),
+        "bevy_transform::components::transform::Transform": (
+          translation: (-432.0, 99.0, 0.0),
+          rotation: (0.0, 0.0, -0.0, 1.0),
+          scale: (1.0, 1.0, 1.0),
+        ),
+      },
+    ),
+    4294966704: (
+      components: {
+        "ball_bouncer::brick::Brick": (),
+        "bevy_transform::components::transform::Transform": (
+          translation: (-400.0, 77.0, 0.0),
+          rotation: (0.0, 0.0, -0.0, 1.0),
+          scale: (1.0, 1.0, 1.0),
+        ),
+      },
+    ),
+    4294966706: (
+      components: {
+        "ball_bouncer::brick::Brick": (),
+        "bevy_transform::components::transform::Transform": (
+          translation: (-368.0, 77.0, 0.0),
+          rotation: (0.0, 0.0, -0.0, 1.0),
+          scale: (1.0, 1.0, 1.0),
+        ),
+      },
+    ),
+    4294966708: (
+      components: {
+        "ball_bouncer::brick::Brick": (),
+        "bevy_transform::components::transform::Transform": (
+          translation: (-336.0, 99.0, 0.0),
+          rotation: (0.0, 0.0, -0.0, 1.0),
+          scale: (1.0, 1.0, 1.0),
+        ),
+      },
+    ),
+    4294966710: (
+      components: {
+        "ball_bouncer::brick::Brick": (),
+        "bevy_transform::components::transform::Transform": (
+          translation: (-304.0, 99.0, 0.0),
+          rotation: (0.0, 0.0, -0.0, 1.0),
+          scale: (1.0, 1.0, 1.0),
+        ),
+      },
+    ),
+    4294966712: (
+      components: {
+        "ball_bouncer::brick::Brick": (),
+        "bevy_transform::components::transform::Transform": (
+          translation: (-304.0, 121.0, 0.0),
+          rotation: (0.0, 0.0, -0.0, 1.0),
+          scale: (1.0, 1.0, 1.0),
+        ),
+      },
+    ),
+    4294966714: (
+      components: {
+        "ball_bouncer::brick::Brick": (),
+        "bevy_transform::components::transform::Transform": (
+          translation: (-272.0, 121.0, 0.0),
+          rotation: (0.0, 0.0, -0.0, 1.0),
+          scale: (1.0, 1.0, 1.0),
+        ),
+      },
+    ),
+    4294966716: (
+      components: {
+        "ball_bouncer::brick::Brick": (),
+        "bevy_transform::components::transform::Transform": (
+          translation: (-272.0, 143.0, 0.0),
+          rotation: (0.0, 0.0, -0.0, 1.0),
+          scale: (1.0, 1.0, 1.0),
+        ),
+      },
+    ),
+    4294966718: (
+      components: {
+        "ball_bouncer::brick::Brick": (),
+        "bevy_transform::components::transform::Transform": (
+          translation: (-240.0, 143.0, 0.0),
+          rotation: (0.0, 0.0, -0.0, 1.0),
+          scale: (1.0, 1.0, 1.0),
+        ),
+      },
+    ),
+    4294966720: (
+      components: {
+        "ball_bouncer::brick::Brick": (),
+        "bevy_transform::components::transform::Transform": (
+          translation: (-208.0, 165.0, 0.0),
+          rotation: (0.0, 0.0, -0.0, 1.0),
+          scale: (1.0, 1.0, 1.0),
+        ),
+      },
+    ),
+    4294966722: (
+      components: {
+        "ball_bouncer::brick::Brick": (),
+        "bevy_transform::components::transform::Transform": (
+          translation: (-176.0, 165.0, 0.0),
+          rotation: (0.0, 0.0, -0.0, 1.0),
+          scale: (1.0, 1.0, 1.0),
+        ),
+      },
+    ),
+    4294966724: (
+      components: {
+        "ball_bouncer::brick::Brick": (),
+        "bevy_transform::components::transform::Transform": (
+          translation: (-144.0, 187.0, 0.0),
+          rotation: (0.0, 0.0, -0.0, 1.0),
+          scale: (1.0, 1.0, 1.0),
+        ),
+      },
+    ),
+    4294966726: (
+      components: {
+        "ball_bouncer::brick::Brick": (),
+        "bevy_transform::components::transform::Transform": (
+          translation: (-112.0, 187.0, 0.0),
+          rotation: (0.0, 0.0, -0.0, 1.0),
+          scale: (1.0, 1.0, 1.0),
+        ),
+      },
+    ),
+    4294966728: (
+      components: {
+        "ball_bouncer::brick::Brick": (),
+        "bevy_transform::components::transform::Transform": (
+          translation: (-80.0, 187.0, 0.0),
+          rotation: (0.0, 0.0, -0.0, 1.0),
+          scale: (1.0, 1.0, 1.0),
+        ),
+      },
+    ),
+    4294966730: (
+      components: {
+        "ball_bouncer::brick::Brick": (),
+        "bevy_transform::components::transform::Transform": (
+          translation: (-48.0, 187.0, 0.0),
+          rotation: (0.0, 0.0, -0.0, 1.0),
+          scale: (1.0, 1.0, 1.0),
+        ),
+      },
+    ),
+    4294966732: (
+      components: {
+        "ball_bouncer::brick::Brick": (),
+        "bevy_transform::components::transform::Transform": (
+          translation: (-16.0, 187.0, 0.0),
+          rotation: (0.0, 0.0, -0.0, 1.0),
+          scale: (1.0, 1.0, 1.0),
+        ),
+      },
+    ),
+  },
+)

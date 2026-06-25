@@ -38,7 +38,8 @@ impl Plugin for UIPlugin {
             )
             .add_systems(OnEnter(MenuPage::LevelFailed), build)
             .add_systems(OnEnter(MenuPage::LevelPaused), build)
-            .add_systems(OnEnter(MenuPage::LevelComplete), build);
+            .add_systems(OnEnter(MenuPage::LevelComplete), build)
+            .add_systems(OnEnter(MenuPage::InputToBeginLevel), build);
     }
 }
 
@@ -51,6 +52,8 @@ pub enum MenuPage {
     LevelPaused,
     LevelSelection,
     LevelComplete,
+    //press Space button to begin
+    InputToBeginLevel,
 }
 
 /// a workaround because spawning scenes with parameters in add_systems is not possible
@@ -70,6 +73,11 @@ pub fn build(mut commands: Commands, menu_page_state: Res<State<MenuPage>>) {
             "Level Complete",
             SUCCESS_COLOR,
             bsn_list![restart_button(), main_menu_button(),],
+        )),
+        MenuPage::InputToBeginLevel => commands.spawn_scene(level_status_page(
+            "Press 'Space Bar' to begin",
+            TEXT_COLOR,
+            bsn_list![],
         )),
         _ => return,
     };

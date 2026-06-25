@@ -3,6 +3,7 @@ use bevy::prelude::*;
 
 use crate::{
     MainState,
+    general_events::CheckGameOverCondition,
     sounds::{PlaySoundEffect, SoundEffect},
 };
 
@@ -13,6 +14,7 @@ pub const BALL_DESPAWN_Y: f32 = -500.;
 
 #[derive(Component, Clone, Default)]
 #[require(
+    DespawnOnExit::<MainState>(MainState::Game),
     RigidBody::Dynamic,
     TransformInterpolation,
     GravityScale(0.),
@@ -26,7 +28,8 @@ pub const BALL_DESPAWN_Y: f32 = -500.;
         combine_rule: CoefficientCombine::Max,
     },
     CollisionEventsEnabled,
-    DespawnOnExit::<MainState>(MainState::Game)
+    Collider::circle(BALL_RADIUS),
+    LinearVelocity(Vec2::new(3. * BALL_SPEED, 2. * BALL_SPEED)),
 )]
 pub struct Ball;
 
@@ -36,25 +39,49 @@ pub struct SpawnBall {
 }
 
 pub fn spawn_ball(trigger: On<SpawnBall>, mut commands: Commands) {
-    let position = trigger.at_position;
-
-    commands.spawn_scene(bsn! {
-        Ball
-        Transform {translation : position}
-        Mesh2d(asset_value(Sphere::new(BALL_RADIUS)))
-        MeshMaterial2d::<ColorMaterial>(asset_value(BALL_COLOR))
-        Collider::circle(BALL_RADIUS)
-        LinearVelocity(Vec2::new(3. * BALL_SPEED, 2. * BALL_SPEED))
-        on(|_event: On<CollisionStart>, mut commands: Commands|{
-            commands.trigger(PlaySoundEffect(SoundEffect::BallBounce))
-        })
-    });
+    commands.spawn((
+        Ball,
+        Transform::from_translation(trigger.at_position),
+        RigidBodyDisabled,
+    ));
 }
 
 pub fn despawn_lost_balls(mut commands: Commands, ball_q: Query<(Entity, &Transform), With<Ball>>) {
     for (entity, transform) in ball_q {
         if transform.translation.y < BALL_DESPAWN_Y {
             commands.entity(entity).despawn();
+            commands.trigger(CheckGameOverCondition);
         }
     }
+}
+
+#[derive(Resource)]
+pub struct BallMesh {
+    mesh_handle: Handle<Mesh>,
+    material_handle: Handle<ColorMaterial>,
+}
+
+impl FromWorld for BallMesh {
+    fn from_world(world: &mut World) -> Self {
+        BallMesh {
+            mesh_handle: world.add_asset::<Mesh>(Sphere::new(BALL_RADIUS)),
+            material_handle: world.add_asset::<ColorMaterial>(BALL_COLOR),
+        }
+    }
+}
+
+pub fn on_ball_insert(
+    on_brick_insert: On<Insert, Ball>,
+    mut commands: Commands,
+    brick_mesh: Res<BallMesh>,
+) {
+    commands
+        .entity(on_brick_insert.entity)
+        .insert((
+            Mesh2d(brick_mesh.mesh_handle.clone()),
+            MeshMaterial2d(brick_mesh.material_handle.clone()),
+        ))
+        .observe(|_event: On<CollisionStart>, mut commands: Commands| {
+            commands.trigger(PlaySoundEffect(SoundEffect::BallBounce))
+        });
 }

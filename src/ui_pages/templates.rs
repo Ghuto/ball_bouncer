@@ -1,5 +1,7 @@
 use bevy::prelude::*;
 
+use crate::level::Level;
+
 use super::buttons::*;
 use super::*;
 
@@ -19,7 +21,7 @@ pub fn level_status_page(
             justify_content: JustifyContent::Center,
             flex_direction: FlexDirection::Column,
         }
-        BackgroundColor(background_color(0.1))
+        BackgroundColor(background_color(0.6))
         Pickable::IGNORE
         Children[
             (
@@ -87,7 +89,7 @@ pub fn title_page() -> impl Scene {
             }
             BorderColor::all(BORDER_COLOR)
             Children[(
-                levels_button()
+                level_selection_button()
             ),(
                 Node {
                     width: Val::Percent(100.),
@@ -104,7 +106,6 @@ pub fn title_page() -> impl Scene {
 
 pub fn level_selection_page() -> impl Scene {
     bsn! {
-
         template(|ctx|{
             let state = ctx.resource::<State<MenuPage>>();
             Ok(DespawnOnExit::<MenuPage>(state.get().clone()))
@@ -127,9 +128,8 @@ pub fn level_selection_page() -> impl Scene {
                 }
                 BorderColor::all(BORDER_COLOR)
                 Children[
-                    (
-                        play_button()
-                    ),(
+                    {Level::get_list_of_level_buttons()}
+                    ,(
                         return_button()
                     )
                 ]
