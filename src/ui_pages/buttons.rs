@@ -1,5 +1,6 @@
-use crate::game_state::MainState;
 use bevy::prelude::*;
+
+use crate::{game_state::{GameState, MainState}, level::{Level, StartLevel}};
 
 use super::*;
 
@@ -61,8 +62,9 @@ pub fn restart_button() -> impl Scene {
             width: Val::Percent(100.),
         }
         menu_button("Restart",30.)
-        on(|_trigger: On<Pointer<Click>>, mut commands: Commands|{
-            commands.trigger(LevelRestart)
+        on(|_trigger: On<Pointer<Click>>, mut commands: Commands,mut page_state: ResMut<NextState<MenuPage>>|{
+            page_state.set(MenuPage::InputToBeginLevel);
+            commands.trigger(LevelRestart);
         })
     }
 }
@@ -82,13 +84,13 @@ pub fn main_menu_button() -> impl Scene {
     }
 }
 
-pub fn levels_button() -> impl Scene {
+pub fn level_selection_button() -> impl Scene {
     bsn! {
         Node {
             width: Val::Percent(100.),
             padding: UiRect::left(Val::Px(10.)),
         }
-        menu_button("Levels",30.)
+        menu_button("Level Selection",30.)
         on(|_trigger: On<Pointer<Click>>, mut page_state_set: ResMut<NextState<MenuPage>>,|{
             page_state_set.set(MenuPage::LevelSelection);
         })
@@ -122,16 +124,16 @@ pub fn return_button() -> impl Scene {
     }
 }
 
-pub fn play_button() -> impl Scene {
+pub fn level_button(level : Level) -> impl Scene {
     bsn! {
         Node {
             width: Val::Percent(100.),
             padding: UiRect::left(Val::Px(10.)),
         }
-        menu_button("Level 1", 30.)
-        on(|_trigger: On<Pointer<Click>>, mut game_state: ResMut<NextState<MainState>>, mut page_state: ResMut<NextState<MenuPage>>| {
-            game_state.set(MainState::Game);
-            page_state.set(MenuPage::Overlay);
+        menu_button(level.get_label(), 30.)
+        on(move |_trigger: On<Pointer<Click>>, mut commands: Commands,mut page_state: ResMut<NextState<MenuPage>>| {
+            page_state.set(MenuPage::InputToBeginLevel);
+            commands.trigger(StartLevel(level));
         })
     }
 }
@@ -145,8 +147,9 @@ pub fn pause_icon_button() -> impl Scene {
         }
         // using "||" to imitate pause icon
         menu_button("||", 30.)
-        on(|_trigger: On<Pointer<Click>>, mut commands: Commands| {
-            commands.trigger(LevelPause);
+        on(|_trigger: On<Pointer<Click>>, mut game_state: ResMut<NextState<GameState>>,mut page_state: ResMut<NextState<MenuPage>>| {
+            page_state.set(MenuPage::LevelPaused);
+            game_state.set(GameState::Stopped);
         })
     }
 }

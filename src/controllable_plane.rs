@@ -27,14 +27,19 @@ pub struct SpawnControllablePlane {
     pub at_position: Vec3,
 }
 
-pub fn spawn_controllable_plane(trigger: On<SpawnControllablePlane>, mut commands: Commands) {
-    let position = trigger.at_position;
+pub fn spawn_controllable_plane(
+    trigger: On<SpawnControllablePlane>,
+    mut commands: Commands,
+    controllable_plane_q: Query<&ControllablePlane>,
+) {
+    // There can only be ONE!
+    if !controllable_plane_q.is_empty() {
+        return;
+    }
 
-    commands.spawn_scene(bsn!(
-        ControllablePlane
-        Transform {translation: position}
-        Mesh2d(asset_value(Rectangle::new(PLANE_WIDTH, PLANE_HEIGHT)))
-        MeshMaterial2d::<ColorMaterial>(asset_value(PLANE_COLOR))
+    commands.spawn((
+        ControllablePlane,
+        Transform::from_translation(trigger.at_position),
     ));
 }
 
@@ -80,4 +85,30 @@ pub fn control_plane(
     // apply move and slide output
     linear_velocity.0 = new_velocity;
     transform.translation = new_position.extend(transform.translation.z);
+}
+
+#[derive(Resource)]
+pub struct ControllablePlaneMesh {
+    mesh_handle: Handle<Mesh>,
+    material_handle: Handle<ColorMaterial>,
+}
+
+impl FromWorld for ControllablePlaneMesh {
+    fn from_world(world: &mut World) -> Self {
+        ControllablePlaneMesh {
+            mesh_handle: world.add_asset::<Mesh>(Rectangle::new(PLANE_WIDTH, PLANE_HEIGHT)),
+            material_handle: world.add_asset::<ColorMaterial>(PLANE_COLOR),
+        }
+    }
+}
+
+pub fn on_controllable_plane_insert(
+    on_brick_insert: On<Insert, ControllablePlane>,
+    mut commands: Commands,
+    brick_mesh: Res<ControllablePlaneMesh>,
+) {
+    commands.entity(on_brick_insert.entity).insert((
+        Mesh2d(brick_mesh.mesh_handle.clone()),
+        MeshMaterial2d(brick_mesh.material_handle.clone()),
+    ));
 }
