@@ -55,8 +55,11 @@ fn resume(mut commands: Commands, rigid_body_disabled_q: Query<Entity, With<Rigi
     }
 }
 
-pub fn watch_input_for_pause(input: Res<ButtonInput<KeyCode>>,     mut game_state: ResMut<NextState<GameState>>,
-mut page_state: ResMut<NextState<MenuPage>>,) {
+pub fn watch_input_for_pause(
+    input: Res<ButtonInput<KeyCode>>,
+    mut game_state: ResMut<NextState<GameState>>,
+    mut page_state: ResMut<NextState<MenuPage>>,
+) {
     if input.just_pressed(KeyCode::Escape) {
         game_state.set(GameState::Stopped);
         page_state.set(MenuPage::LevelPaused);

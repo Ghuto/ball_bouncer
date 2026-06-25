@@ -1,12 +1,16 @@
 use avian2d::prelude::*;
 use bevy::prelude::*;
 
-use crate::MainState;
+use crate::{GameLayer, MainState};
 
 pub const PLANE_SPEED: f32 = 300.;
 pub const PLANE_WIDTH: f32 = 100.;
 pub const PLANE_HEIGHT: f32 = 10.;
 pub const PLANE_COLOR: Color = Color::Srgba(bevy::color::palettes::basic::BLACK);
+
+pub const PLANE_SCALE_EXTEND_AMOUNT: f32 = 0.5;
+pub const PLANE_SCALE_SHORTEN_AMOUNT: f32 = -0.3;
+pub const PLANE_SCALE_MIN: f32 = 0.2;
 
 pub const INPUT_LEFT: [KeyCode; 2] = [KeyCode::ArrowRight, KeyCode::KeyD];
 pub const INPUT_RIGHT: [KeyCode; 2] = [KeyCode::ArrowLeft, KeyCode::KeyA];
@@ -19,6 +23,7 @@ pub const INPUT_RIGHT: [KeyCode; 2] = [KeyCode::ArrowLeft, KeyCode::KeyA];
     LinearVelocity::ZERO,
     SweptCcd::default(),
     RigidBody::Kinematic,
+    CollisionLayers::new(GameLayer::ControllablePlane, [GameLayer::Ball,GameLayer::PickUp,GameLayer::Border]),
 )]
 pub struct ControllablePlane;
 
@@ -31,6 +36,7 @@ pub fn spawn_controllable_plane(
     trigger: On<SpawnControllablePlane>,
     mut commands: Commands,
     controllable_plane_q: Query<&ControllablePlane>,
+    brick_mesh: Res<ControllablePlaneMesh>,
 ) {
     // There can only be ONE!
     if !controllable_plane_q.is_empty() {
@@ -40,7 +46,35 @@ pub fn spawn_controllable_plane(
     commands.spawn((
         ControllablePlane,
         Transform::from_translation(trigger.at_position),
+        Mesh2d(brick_mesh.mesh_handle.clone()),
+        MeshMaterial2d(brick_mesh.material_handle.clone()),
     ));
+}
+
+#[derive(Copy, Clone)]
+pub enum PlaneModification {
+    Extend,
+    Shorten,
+}
+
+#[derive(Event)]
+pub struct ModifyPlane(pub PlaneModification);
+
+pub fn modify_plane(
+    modify_plane: On<ModifyPlane>,
+    mut plane_q: Single<&mut Transform, With<ControllablePlane>>,
+) {
+    let amount = match modify_plane.0 {
+        PlaneModification::Extend => PLANE_SCALE_EXTEND_AMOUNT,
+        PlaneModification::Shorten => PLANE_SCALE_SHORTEN_AMOUNT,
+    };
+    let new_scale = plane_q.scale.x + amount;
+
+    plane_q.scale.x = if new_scale > PLANE_SCALE_MIN {
+        new_scale
+    } else {
+        PLANE_SCALE_MIN
+    }
 }
 
 pub fn control_plane(
@@ -100,15 +134,4 @@ impl FromWorld for ControllablePlaneMesh {
             material_handle: world.add_asset::<ColorMaterial>(PLANE_COLOR),
         }
     }
-}
-
-pub fn on_controllable_plane_insert(
-    on_brick_insert: On<Insert, ControllablePlane>,
-    mut commands: Commands,
-    brick_mesh: Res<ControllablePlaneMesh>,
-) {
-    commands.entity(on_brick_insert.entity).insert((
-        Mesh2d(brick_mesh.mesh_handle.clone()),
-        MeshMaterial2d(brick_mesh.material_handle.clone()),
-    ));
 }
