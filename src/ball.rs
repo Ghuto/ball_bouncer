@@ -12,8 +12,8 @@ pub const BALL_COLOR: Color = Color::Srgba(bevy::color::palettes::basic::WHITE);
 pub const BALL_SPEED: f32 = 100.;
 pub const BALL_DESPAWN_Y: f32 = -500.;
 
-pub const BALL_SPEED_ACCELERATE: f32 = BALL_SPEED / 4.;
-pub const BALL_SPEED_DECELERATE: f32 = BALL_SPEED / 5.;
+pub const BALL_SPEED_ACCELERATE: f32 = BALL_SPEED / 3.;
+pub const BALL_SPEED_DECELERATE: f32 = BALL_SPEED / 4.;
 pub const BALL_SPEED_MIN: f32 = 30.;
 
 #[derive(Component, Clone, Default)]
@@ -104,11 +104,13 @@ pub fn modify_ball(
     };
 
     for mut linear_velocity in ball_q.iter_mut() {
-        linear_velocity.0 *= amount;
         let length = linear_velocity.length();
+        let factor = linear_velocity.0 / length;
+
         if length < BALL_SPEED_MIN {
-            let factor = linear_velocity.0 / length;
             linear_velocity.0 = factor * BALL_SPEED_MIN;
+        } else {
+            linear_velocity.0 += amount * factor;
         }
     }
 }

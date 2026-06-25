@@ -7,7 +7,7 @@ use rand::{
 
 use crate::{
     GameLayer,
-    ball::{BallModification, SpawnBall},
+    ball::{BallModification, ModifyBall, SpawnBall},
     controllable_plane::{ModifyPlane, PlaneModification},
     game_state::MainState,
 };
@@ -95,7 +95,9 @@ pub fn try_to_spawn_power_up_pick_up(
                         PowerUp::ModifyPlane(modification) => {
                             commands.trigger(ModifyPlane(modification));
                         }
-                        _ => {}
+                        PowerUp::ModifyBalls(modification) => {
+                            commands.trigger(ModifyBall(modification));
+                        }
                     }
                     commands.entity(pick_up_entity).despawn();
                 },
