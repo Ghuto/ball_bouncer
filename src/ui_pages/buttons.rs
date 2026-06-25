@@ -1,6 +1,9 @@
 use bevy::prelude::*;
 
-use crate::{game_state::{GameState, MainState}, level::{Level, StartLevel}};
+use crate::{
+    game_state::{GameState, MainState},
+    level::{Level, StartLevel},
+};
 
 use super::*;
 
@@ -124,7 +127,7 @@ pub fn return_button() -> impl Scene {
     }
 }
 
-pub fn level_button(level : Level) -> impl Scene {
+pub fn level_button(level: Level) -> impl Scene {
     bsn! {
         Node {
             width: Val::Percent(100.),

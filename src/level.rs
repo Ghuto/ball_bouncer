@@ -8,11 +8,11 @@ use crate::{
 #[derive(Component)]
 pub struct LevelRoot;
 
-#[derive(Resource,Reflect)]
+#[derive(Resource, Reflect)]
 #[reflect(Resource)]
 pub struct InLevel(pub Level);
 
-#[derive(Clone, Copy,Reflect)]
+#[derive(Clone, Copy, Reflect)]
 pub enum Level {
     First,
     Second,
@@ -33,12 +33,9 @@ impl Level {
     }
 
     pub fn get_list_of_level_buttons() -> impl SceneList {
-        bsn_list![level_button(Level::First),level_button(Level::Second)]
+        bsn_list![level_button(Level::First), level_button(Level::Second)]
     }
-
 }
-
-
 
 pub fn remove_level_resource(mut commands: Commands) {
     commands.remove_resource::<InLevel>();
@@ -47,7 +44,7 @@ pub fn remove_level_resource(mut commands: Commands) {
 #[derive(Event)]
 pub struct StartLevel(pub Level);
 
-pub fn start_level(
+pub fn level_selected(
     start_level: On<StartLevel>,
     mut commands: Commands,
     mut main_state: ResMut<NextState<MainState>>,
@@ -56,15 +53,11 @@ pub fn start_level(
     commands.insert_resource(InLevel(start_level.0));
 }
 
-pub fn spawn_level(
-    mut commands: Commands,
-    asset_server: Res<AssetServer>,
-    in_level: Res<InLevel>
-) {
-
+pub fn spawn_level(mut commands: Commands, asset_server: Res<AssetServer>, in_level: Res<InLevel>) {
     commands.trigger(SpawnBorder);
     commands.trigger(SpawnBall {
         at_position: Vec3::new(0., 50., 0.),
+        disabled: true,
     });
     commands.trigger(SpawnControllablePlane {
         at_position: Vec3::new(0., -250., 0.),

@@ -1,7 +1,7 @@
 use avian2d::prelude::*;
 use bevy::{prelude::*, window::PrimaryWindow};
 
-use crate::MainState;
+use crate::{GameLayer, MainState};
 
 #[derive(Event, Clone)]
 pub struct SpawnBorder;
@@ -21,6 +21,10 @@ pub fn spawn_border(
 
     commands.spawn((
         DespawnOnExit::<MainState>(MainState::Game),
+        CollisionLayers::new(
+            GameLayer::Border,
+            [GameLayer::Ball, GameLayer::ControllablePlane],
+        ),
         RigidBody::Static,
         Collider::polyline(
             vec![

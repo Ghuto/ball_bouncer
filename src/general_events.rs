@@ -1,14 +1,8 @@
 use bevy::prelude::*;
 
 use crate::{
-    InLevel,
-    ball::Ball,
-    brick::Brick,
-    game_state::GameState,
-    level::StartLevel,
-    ui_pages::MenuPage,
+    InLevel, ball::Ball, brick::Brick, game_state::GameState, level::StartLevel, ui_pages::MenuPage,
 };
-
 
 #[derive(Event)]
 pub struct LevelResume;

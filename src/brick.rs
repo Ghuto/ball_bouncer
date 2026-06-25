@@ -1,7 +1,9 @@
 use avian2d::prelude::*;
 use bevy::{color::palettes::tailwind, prelude::*};
 
-use crate::{MainState, general_events::CheckWinCondition};
+use crate::{
+    GameLayer, MainState, general_events::CheckWinCondition, powerup::TrySpawnPowerUpPickUp,
+};
 
 const BRICK_WIDTH: f32 = 30.;
 const BRICK_HEIGHT: f32 = 20.;
@@ -19,6 +21,7 @@ const BRICK_COLOR: Color = bevy::prelude::Color::Srgba(tailwind::TEAL_400);
     RigidBody::Static,
     Collider::rectangle(BRICK_WIDTH, BRICK_HEIGHT),
     CollisionEventsEnabled,
+    CollisionLayers::new(GameLayer::Brick, [GameLayer::Ball]),
 )]
 pub struct Brick;
 
@@ -80,8 +83,13 @@ pub fn on_brick_insert(
             MeshMaterial2d(brick_mesh.material_handle.clone()),
         ))
         // destroying brick
-        .observe(|trigger: On<CollisionEnd>, mut commands: Commands| {
-            commands.entity(trigger.collider1).despawn();
-            commands.trigger(CheckWinCondition);
-        });
+        .observe(
+            |trigger: On<CollisionEnd>, mut commands: Commands, brick_q: Query<&Transform>| {
+                commands.entity(trigger.collider1).despawn();
+                commands.trigger(TrySpawnPowerUpPickUp {
+                    at_position: brick_q.get(trigger.collider1).unwrap().translation,
+                });
+                commands.trigger(CheckWinCondition);
+            },
+        );
 }
