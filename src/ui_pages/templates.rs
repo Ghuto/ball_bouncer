@@ -86,6 +86,7 @@ pub fn title_page() -> impl Scene {
                 height: Val::Percent(100.),
                 width: Val::Px(250.),
                 border: UiRect::right(Val::Px(5.)),
+                row_gap: Val::Px(1.)
             }
             BorderColor::all(BORDER_COLOR)
             Children[(
@@ -124,7 +125,6 @@ pub fn level_selection_page() -> impl Scene {
                     height: Val::Percent(100.),
                     width: Val::Px(250.),
                     border: UiRect::right(Val::Px(5.)),
-
                 }
                 BorderColor::all(BORDER_COLOR)
                 Children[

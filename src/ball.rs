@@ -1,74 +1,15 @@
 use avian2d::prelude::*;
 use bevy::prelude::*;
 
-use crate::{
-    GameLayer, MainState,
-    general_events::CheckGameOverCondition,
-    sounds::{PlaySoundEffect, SoundEffect},
-};
+use crate::{MainState, sounds::SoundEffect};
 
-pub const BALL_RADIUS: f32 = 5.;
-pub const BALL_COLOR: Color = Color::Srgba(bevy::color::palettes::basic::WHITE);
-pub const BALL_SPEED: f32 = 100.;
-pub const BALL_DESPAWN_Y: f32 = -500.;
-
-pub const BALL_SPEED_ACCELERATE: f32 = BALL_SPEED / 3.;
-pub const BALL_SPEED_DECELERATE: f32 = BALL_SPEED / 4.;
-pub const BALL_SPEED_MIN: f32 = 30.;
-
-#[derive(Component, Clone, Default)]
-#[require(
-    DespawnOnExit::<MainState>(MainState::Game),
-    RigidBody::Dynamic,
-    TransformInterpolation,
-    GravityScale(0.),
-    Friction {
-        dynamic_coefficient: 0.,
-        static_coefficient: 0.,
-        combine_rule: CoefficientCombine::Min,
-    },
-    Restitution {
-        coefficient: 1.,
-        combine_rule: CoefficientCombine::Max,
-    },
-    CollisionEventsEnabled,
-    Collider::circle(BALL_RADIUS),
-    LinearVelocity(Vec2::new(3. * BALL_SPEED, 2. * BALL_SPEED)),
-    CollisionLayers::new(
-        GameLayer::Ball,
-        [GameLayer::ControllablePlane,GameLayer::Brick,GameLayer::Border],
-    )
-)]
-pub struct Ball;
-
-#[derive(Event, Clone)]
-pub struct SpawnBall {
-    pub at_position: Vec3,
-    pub disabled: bool,
-}
-
-pub fn spawn_ball(trigger: On<SpawnBall>, mut commands: Commands, brick_mesh: Res<BallMesh>) {
-    commands
-        .spawn((
-            Ball,
-            Transform::from_translation(trigger.at_position),
-            Mesh2d(brick_mesh.mesh_handle.clone()),
-            MeshMaterial2d(brick_mesh.material_handle.clone()),
-        ))
-        .insert_if(RigidBodyDisabled, || trigger.disabled)
-        .observe(|_event: On<CollisionStart>, mut commands: Commands| {
-            commands.trigger(PlaySoundEffect(SoundEffect::BallBounce))
-        });
-}
-
-pub fn despawn_lost_balls(mut commands: Commands, ball_q: Query<(Entity, &Transform), With<Ball>>) {
-    for (entity, transform) in ball_q {
-        if transform.translation.y < BALL_DESPAWN_Y {
-            commands.entity(entity).despawn();
-            commands.trigger(CheckGameOverCondition);
-        }
-    }
-}
+const BALL_RADIUS: f32 = 5.;
+const BALL_COLOR: Color = Color::Srgba(bevy::color::palettes::basic::WHITE);
+const BALL_SPEED: f32 = 100.;
+const BALL_DESPAWN_Y: f32 = -500.;
+const BALL_SPEED_ACCELERATE: f32 = BALL_SPEED / 3.;
+const BALL_SPEED_DECELERATE: f32 = BALL_SPEED / 4.;
+const BALL_SPEED_MIN: f32 = 30.;
 
 #[derive(Resource)]
 pub struct BallMesh {
@@ -85,32 +26,100 @@ impl FromWorld for BallMesh {
     }
 }
 
-#[derive(Copy, Clone)]
-pub enum BallModification {
+#[derive(SceneComponent, Clone, Default)]
+#[scene(BallProps)]
+#[require(
+    RigidBody::Dynamic,
+    TransformInterpolation,
+    GravityScale(0.),
+    Friction {
+        dynamic_coefficient: 0.,
+        static_coefficient: 0.,
+        combine_rule: CoefficientCombine::Min,
+    },
+    Restitution {
+        coefficient: 1.,
+        combine_rule: CoefficientCombine::Max,
+    },
+    CollisionEventsEnabled,
+    Collider::circle(BALL_RADIUS),
+    LinearVelocity(Vec2::new(3. * BALL_SPEED, 2. * BALL_SPEED)),
+)]
+pub struct Ball;
+
+pub struct BallProps {
+    pub position: Vec3,
+}
+
+impl Default for BallProps {
+    fn default() -> Self {
+        BallProps {
+            position: Vec3::new(0., 50., 0.),
+        }
+    }
+}
+
+impl Ball {
+    fn scene(props: BallProps) -> impl Scene {
+        let position = props.position;
+        bsn! {
+            #Ball
+            Transform {translation: position}
+            template(|ctx|{
+                let game_state = ctx.resource::<State<MainState>>();
+                Ok(DespawnOnExit::<MainState>(game_state.get().clone()))
+            })
+            template(|ctx|{
+                let ball_mesh = ctx.resource::<BallMesh>();
+                Ok(Mesh2d(ball_mesh.mesh_handle.clone()))
+            })
+            template(|ctx|{
+                let ball_mesh = ctx.resource::<BallMesh>();
+                Ok(MeshMaterial2d(ball_mesh.material_handle.clone()))
+            })
+            // on bounce
+            on(|_event: On<CollisionStart>, mut commands: Commands| {
+                commands.trigger(SoundEffect::BallBounce)
+            })
+        }
+    }
+}
+
+pub fn despawn_lost_balls(mut commands: Commands, ball_q: Query<(Entity, &Transform), With<Ball>>) {
+    for (entity, transform) in ball_q {
+        if transform.translation.y < BALL_DESPAWN_Y {
+            commands.entity(entity).despawn();
+        }
+    }
+}
+
+#[derive(Event, Clone)]
+pub enum ModifyBall {
     Accelerate,
     Decelerate,
 }
 
-#[derive(Event)]
-pub struct ModifyBall(pub BallModification);
+impl ModifyBall {
+    pub fn on_trigger(modify_plane: On<Self>, mut ball_q: Query<&mut LinearVelocity, With<Ball>>) {
+        let ball_min_speed = BALL_SPEED_MIN;
+        let amount = modify_plane.amount();
 
-pub fn modify_ball(
-    modify_plane: On<ModifyBall>,
-    mut ball_q: Query<&mut LinearVelocity, With<Ball>>,
-) {
-    let amount = match modify_plane.0 {
-        BallModification::Accelerate => BALL_SPEED_ACCELERATE,
-        BallModification::Decelerate => BALL_SPEED_DECELERATE,
-    };
+        for mut linear_velocity in ball_q.iter_mut() {
+            let length = linear_velocity.length();
+            let factor = linear_velocity.0 / length;
 
-    for mut linear_velocity in ball_q.iter_mut() {
-        let length = linear_velocity.length();
-        let factor = linear_velocity.0 / length;
+            if length < ball_min_speed {
+                linear_velocity.0 = factor * ball_min_speed;
+            } else {
+                linear_velocity.0 += amount * factor;
+            }
+        }
+    }
 
-        if length < BALL_SPEED_MIN {
-            linear_velocity.0 = factor * BALL_SPEED_MIN;
-        } else {
-            linear_velocity.0 += amount * factor;
+    fn amount(&self) -> f32 {
+        match &self {
+            ModifyBall::Accelerate => BALL_SPEED_ACCELERATE,
+            ModifyBall::Decelerate => BALL_SPEED_DECELERATE,
         }
     }
 }

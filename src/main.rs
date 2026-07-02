@@ -3,7 +3,6 @@ use bevy::prelude::*;
 use bevy::window::WindowResolution;
 
 use crate::ball::*;
-use crate::border::*;
 use crate::brick::*;
 use crate::camera::*;
 use crate::controllable_plane::*;
@@ -12,12 +11,11 @@ use crate::editor::EditorPlugin;
 use crate::game_state::*;
 use crate::general_events::*;
 use crate::level::*;
-use crate::powerup::*;
 use crate::sounds::*;
+use crate::ui_pages::MenuPage;
 use crate::ui_pages::UIPlugin;
 
 mod ball;
-mod border;
 mod brick;
 mod camera;
 mod controllable_plane;
@@ -26,6 +24,7 @@ mod editor;
 mod game_state;
 mod general_events;
 mod level;
+mod level_border;
 mod powerup;
 mod sounds;
 mod ui_pages;
@@ -39,9 +38,6 @@ const DEFAULT_HEIGHT_RESOLUTION: u32 = 720;
 pub enum GameLayer {
     #[default]
     Default, // the default layer that objects are assigned to
-    Brick,
-    Ball,
-    Border,
     ControllablePlane,
     PickUp,
 }
@@ -72,40 +68,74 @@ fn main() {
             #[cfg(feature = "inspector")]
             WorldInspectorPlugin::new(),
         ))
-        .add_systems(Startup, (spawn_camera, load_sound_effects))
+        .add_systems(Startup, spawn_camera)
         .add_systems(
             FixedUpdate,
-            despawn_lost_balls.run_if(in_state(GameState::Running)),
+            (despawn_lost_balls, win_check, lose_check).run_if(in_state(GameState::Running)),
         )
         .add_systems(
             Update,
-            ((watch_input_for_pause, control_plane).run_if(in_state(GameState::Running)),),
+            (
+                (watch_input_for_pause, control_plane).run_if(in_state(GameState::Running)),
+                press_any_button_to_begin.run_if(in_state(GameState::WaitingForInput)),
+            ),
         )
-        .add_systems(
-            OnTransition {
-                exited: MainState::Game,
-                entered: MainState::Title,
-            },
-            remove_level_resource,
-        )
-        .add_systems(OnEnter(GameState::WaitingForInputToBegin), spawn_level)
-        .add_observer(spawn_controllable_plane)
-        .add_observer(spawn_ball)
-        .add_observer(spawn_border)
-        .add_observer(on_spawn_brick)
-        .add_observer(on_play_sound)
-        .add_observer(on_level_resume)
-        .add_observer(on_level_restart)
-        .add_observer(on_level_complete)
-        .add_observer(check_win_condition)
-        .add_observer(check_game_over_condition)
-        .add_observer(level_selected)
         .init_resource::<BrickMesh>()
-        .add_observer(on_brick_insert)
         .init_resource::<BallMesh>()
         .init_resource::<ControllablePlaneMesh>()
-        .add_observer(try_to_spawn_power_up_pick_up)
-        .add_observer(modify_plane)
-        .add_observer(modify_ball)
+        .init_resource::<SoundEffects>()
+        .add_observer(SoundEffect::on_trigger)
+        .add_observer(ResumeLevel::on_trigger)
+        .add_observer(RestartLevel::on_trigger)
+        .add_observer(Level::on_trigger)
+        .add_observer(ModifyPlane::on_trigger)
+        .add_observer(ModifyBall::on_trigger)
+        .add_observer(Brick::on_insert)
         .run();
+}
+
+fn watch_input_for_pause(
+    input: Res<ButtonInput<KeyCode>>,
+    mut game_state: ResMut<NextState<GameState>>,
+    mut page_state: ResMut<NextState<MenuPage>>,
+) {
+    if input.just_pressed(KeyCode::Escape) {
+        game_state.set(GameState::Paused);
+        page_state.set(MenuPage::LevelPaused);
+    }
+}
+
+/// When Space button is pressed it resumes the level. Intially it is paused
+fn press_any_button_to_begin(input: Res<ButtonInput<KeyCode>>, mut commands: Commands) {
+    if input.just_pressed(KeyCode::Space) {
+        commands.trigger(ResumeLevel);
+    }
+}
+
+#[derive(Event)]
+pub enum CheckCondition {
+    Win,
+    GameOver,
+}
+
+fn win_check(
+    mut game_state: ResMut<NextState<GameState>>,
+    mut page_state: ResMut<NextState<MenuPage>>,
+    brick_q: Query<&Brick>,
+) {
+    if brick_q.is_empty() {
+        game_state.set(GameState::Paused);
+        page_state.set(MenuPage::LevelComplete);
+    }
+}
+
+fn lose_check(
+    mut game_state: ResMut<NextState<GameState>>,
+    mut page_state: ResMut<NextState<MenuPage>>,
+    ball_q: Query<&Ball>,
+) {
+    if ball_q.is_empty() {
+        game_state.set(GameState::Paused);
+        page_state.set(MenuPage::LevelFailed);
+    }
 }

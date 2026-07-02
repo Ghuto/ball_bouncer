@@ -18,12 +18,7 @@ use bevy::{
 use std::fs::File;
 use std::io::Write;
 
-use crate::{
-    brick::{Brick, SpawnBrick},
-    camera::MyCamera,
-    game_state::MainState,
-    level::InLevel,
-};
+use crate::{brick::Brick, camera::MyCamera, game_state::MainState, level::Level};
 
 pub struct EditorPlugin;
 
@@ -35,11 +30,8 @@ struct EditorSettings {
 #[derive(Component, Clone, Default)]
 struct ConditionalWidget();
 
-fn allow_spawning_items_on_click(
-    settings: Res<EditorSettings>,
-    main_state: Res<State<MainState>>,
-) -> bool {
-    settings.allow_spawning_items_on_click && main_state.eq(&MainState::Game)
+fn allow_spawning_items_on_click(settings: Res<EditorSettings>) -> bool {
+    settings.allow_spawning_items_on_click
 }
 
 impl Plugin for EditorPlugin {
@@ -86,6 +78,7 @@ pub fn on_mouse_click_spawn_brick(
     window: Single<&Window, With<PrimaryWindow>>,
     buttons: Res<ButtonInput<MouseButton>>,
     camera_transform: Single<&Transform, With<MyCamera>>,
+    brick_q: Query<&Transform, With<Brick>>,
 ) {
     if buttons.pressed(MouseButton::Left) {
         if let Some(cursor_position) = window.cursor_position() {
@@ -95,15 +88,35 @@ pub fn on_mouse_click_spawn_brick(
             // Camera origin is center but cursor origin is left/top
             // therefor subtracting half of the screen.
             // Y needs to be inverted to go from top->bottom to bottom->top.
-            let brick_position_x = cursor_position.x - window.width() / 2. + camera_translation.x;
-            let brick_position_y = window.height() / 2. - cursor_position.y + camera_translation.y;
+            let mut brick_position_x =
+                cursor_position.x - window.width() / 2. + camera_translation.x;
+            let mut brick_position_y =
+                window.height() / 2. - cursor_position.y + camera_translation.y;
+            let mut brick_position_z = 0.;
 
-            commands.trigger(SpawnBrick {
-                at_position: Vec3 {
-                    x: brick_position_x,
-                    y: brick_position_y,
-                    z: 0.,
-                },
+            let rounded_translation = Brick::rounded_position(Vec3::new(
+                brick_position_x,
+                brick_position_y,
+                brick_position_z,
+            ));
+
+            // if there is a brick already in this position then do not spawn a brick
+            for transform_brick in brick_q {
+                if transform_brick.translation.eq(&rounded_translation) {
+                    return;
+                }
+            }
+
+            brick_position_x = rounded_translation.x;
+            brick_position_y = rounded_translation.y;
+            brick_position_z = rounded_translation.z;
+
+            commands.spawn_scene(bsn! {
+                @Brick{
+                    @x: brick_position_x ,
+                    @y: brick_position_y,
+                    @z: brick_position_z,
+                }
             });
         }
     }
@@ -206,7 +219,11 @@ fn saving_level_into_scene(world: &mut World) {
         editing_state.set(EditingState::Editing);
     }
 
-    let level_path = world.resource::<InLevel>().0.get_file_name();
+    let level_path = world
+        .query::<&Level>()
+        .single(world)
+        .unwrap()
+        .get_file_name();
 
     let type_registry = world.resource::<AppTypeRegistry>().read();
 

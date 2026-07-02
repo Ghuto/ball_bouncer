@@ -1,8 +1,6 @@
 use avian2d::prelude::{RigidBody, RigidBodyDisabled};
 use bevy::prelude::*;
 
-use crate::{general_events::LevelResume, ui_pages::MenuPage};
-
 // main state at which the game starts with title
 // and all gameplay functionalities are not running
 #[derive(States, Default, Debug, Clone, PartialEq, Eq, Hash, Reflect)]
@@ -16,9 +14,9 @@ pub enum MainState {
 #[source(MainState = MainState::Game)]
 pub enum GameState {
     #[default]
-    WaitingForInputToBegin,
+    WaitingForInput,
     Running,
-    Stopped,
+    Paused,
 }
 
 pub struct StatePlugin;
@@ -28,19 +26,16 @@ impl Plugin for StatePlugin {
         app.init_state::<MainState>()
             .add_sub_state::<GameState>()
             .add_systems(OnEnter(GameState::Running), resume)
-            .add_systems(OnEnter(GameState::Stopped), pause)
-            .add_systems(
-                Update,
-                press_any_button_to_begin.run_if(in_state(GameState::WaitingForInputToBegin)),
-            );
+            .add_systems(OnEnter(GameState::Paused), pause)
+            .add_observer(on_insert_rigid_body_disable.run_if(
+                in_state(GameState::Paused).or_eager(in_state(GameState::WaitingForInput)),
+            ));
     }
 }
 
-/// When Space button is pressed it resumes the level. Intially it is paused
-fn press_any_button_to_begin(input: Res<ButtonInput<KeyCode>>, mut commands: Commands) {
-    if input.just_pressed(KeyCode::Space) {
-        commands.trigger(LevelResume);
-    }
+/// when RigidBody is inserted disable it by inserting RigidBodyDisabled
+fn on_insert_rigid_body_disable(trigger: On<Insert, RigidBody>, mut commands: Commands) {
+    commands.entity(trigger.entity).insert(RigidBodyDisabled);
 }
 
 fn pause(mut commands: Commands, rigid_body_q: Query<Entity, With<RigidBody>>) {
@@ -52,16 +47,5 @@ fn pause(mut commands: Commands, rigid_body_q: Query<Entity, With<RigidBody>>) {
 fn resume(mut commands: Commands, rigid_body_disabled_q: Query<Entity, With<RigidBodyDisabled>>) {
     for entity in rigid_body_disabled_q {
         commands.entity(entity).remove::<RigidBodyDisabled>();
-    }
-}
-
-pub fn watch_input_for_pause(
-    input: Res<ButtonInput<KeyCode>>,
-    mut game_state: ResMut<NextState<GameState>>,
-    mut page_state: ResMut<NextState<MenuPage>>,
-) {
-    if input.just_pressed(KeyCode::Escape) {
-        game_state.set(GameState::Stopped);
-        page_state.set(MenuPage::LevelPaused);
     }
 }

@@ -1,18 +1,21 @@
-use bevy::prelude::*;
+use bevy::{prelude::*, window::PrimaryWindow};
 
 use crate::{
-    ball::SpawnBall, border::SpawnBorder, controllable_plane::SpawnControllablePlane,
-    game_state::MainState, ui_pages::buttons::level_button,
+    ball::Ball, controllable_plane::ControllablePlane, game_state::MainState,
+    level_border::LevelBorder, ui_pages::buttons::level_button,
 };
 
+// This is the relationship FROM child TO parent
 #[derive(Component)]
-pub struct LevelRoot;
+#[relationship(relationship_target = LevelEntities)]
+struct InLevel(Entity);
 
-#[derive(Resource, Reflect)]
-#[reflect(Resource)]
-pub struct InLevel(pub Level);
+// This is the relationship target on the parent
+#[derive(Component)]
+#[relationship_target(relationship = InLevel)]
+struct LevelEntities(Vec<Entity>);
 
-#[derive(Clone, Copy, Reflect)]
+#[derive(Component, Clone, Reflect, Event, Debug, Eq, PartialEq, Hash)]
 pub enum Level {
     First,
     Second,
@@ -35,36 +38,33 @@ impl Level {
     pub fn get_list_of_level_buttons() -> impl SceneList {
         bsn_list![level_button(Level::First), level_button(Level::Second)]
     }
-}
 
-pub fn remove_level_resource(mut commands: Commands) {
-    commands.remove_resource::<InLevel>();
-}
+    pub fn on_trigger(
+        start_level: On<Self>,
+        mut commands: Commands,
+        mut main_state: ResMut<NextState<MainState>>,
+        window: Single<&Window, With<PrimaryWindow>>,
+    ) {
+        let level = start_level.event().clone();
+        let level_path = level.get_file_name();
 
-#[derive(Event)]
-pub struct StartLevel(pub Level);
+        main_state.set(MainState::Game);
 
-pub fn level_selected(
-    start_level: On<StartLevel>,
-    mut commands: Commands,
-    mut main_state: ResMut<NextState<MainState>>,
-) {
-    main_state.set(MainState::Game);
-    commands.insert_resource(InLevel(start_level.0));
-}
-
-pub fn spawn_level(mut commands: Commands, asset_server: Res<AssetServer>, in_level: Res<InLevel>) {
-    commands.trigger(SpawnBorder);
-    commands.trigger(SpawnBall {
-        at_position: Vec3::new(0., 50., 0.),
-        disabled: true,
-    });
-    commands.trigger(SpawnControllablePlane {
-        at_position: Vec3::new(0., -250., 0.),
-    });
-    commands.spawn((
-        DynamicWorldRoot(asset_server.load(in_level.0.get_file_name())),
-        DespawnOnExit::<MainState>(MainState::Game),
-        LevelRoot,
-    ));
+        commands.queue_spawn_scene({
+            bsn! {
+                DespawnOnExit::<MainState>(MainState::Game)
+                template(move |_|{
+                    Ok(level.clone())
+                })
+                LevelEntities[
+                    @Ball,
+                    @LevelBorder{
+                        @border_vertices: LevelBorder::vertices_from_window(&window)
+                    },
+                    @ControllablePlane,
+                    DynamicWorldRoot(level_path)
+                ]
+            }
+        });
+    }
 }

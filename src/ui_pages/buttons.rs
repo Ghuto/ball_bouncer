@@ -2,7 +2,7 @@ use bevy::prelude::*;
 
 use crate::{
     game_state::{GameState, MainState},
-    level::{Level, StartLevel},
+    level::Level,
 };
 
 use super::*;
@@ -18,28 +18,31 @@ pub fn menu_button(text: &'static str, font_size: f32) -> impl Scene {
         ]
         // play a sound
         on(|_: On<Pointer<Over>>, mut command: Commands|{
-            command.trigger(PlaySoundEffect(SoundEffect::MenuHover))
+            command.trigger(SoundEffect::MenuHover)
         })
         // on hover change text color
-        on(| trigger: On<Pointer<Over>>, button_q: Query<&Children>, mut text_color_q: Query<&mut TextColor> |{
-            let children = button_q.get(trigger.entity).unwrap();
-
-            for child in children {
-                if let Ok(mut text_color) = text_color_q.get_mut(*child) {
-                    text_color.0 = TEXT_HOVER_COLOR;
-                }
-            }
+        on(| trigger: On<Pointer<Over>>, button_q: Query<&Children>, text_color_q: Query<&mut TextColor> |{
+            change_text_color(trigger.entity,button_q,text_color_q,TEXT_HOVER_COLOR);
         })
         // on over change text color back
-        on(| trigger: On<Pointer<Out>>, button_q: Query<&Children>, mut text_color_q: Query<&mut TextColor> |{
-            let children = button_q.get(trigger.entity).unwrap();
-
-            for child in children {
-                if let Ok(mut text_color) = text_color_q.get_mut(*child) {
-                    text_color.0 = TEXT_COLOR;
-                }
-            }
+        on(| trigger: On<Pointer<Out>>, button_q: Query<&Children>, text_color_q: Query<&mut TextColor> |{
+            change_text_color(trigger.entity,button_q,text_color_q,TEXT_COLOR);
         })
+    }
+}
+
+fn change_text_color(
+    entity: Entity,
+    button_q: Query<&Children>,
+    mut text_color_q: Query<&mut TextColor>,
+    new_text_color: Color,
+) {
+    let children = button_q.get(entity).unwrap();
+
+    for child in children {
+        if let Ok(mut text_color) = text_color_q.get_mut(*child) {
+            text_color.0 = new_text_color;
+        }
     }
 }
 
@@ -52,7 +55,7 @@ pub fn resume_button() -> impl Scene {
         }
         menu_button("Resume",30.)
         on(|_trigger: On<Pointer<Click>>, mut commands: Commands|{
-            commands.trigger(LevelResume)
+            commands.trigger(ResumeLevel)
         })
     }
 }
@@ -67,7 +70,7 @@ pub fn restart_button() -> impl Scene {
         menu_button("Restart",30.)
         on(|_trigger: On<Pointer<Click>>, mut commands: Commands,mut page_state: ResMut<NextState<MenuPage>>|{
             page_state.set(MenuPage::InputToBeginLevel);
-            commands.trigger(LevelRestart);
+            commands.trigger(RestartLevel);
         })
     }
 }
@@ -93,7 +96,7 @@ pub fn level_selection_button() -> impl Scene {
             width: Val::Percent(100.),
             padding: UiRect::left(Val::Px(10.)),
         }
-        menu_button("Level Selection",30.)
+        menu_button("Levels",30.)
         on(|_trigger: On<Pointer<Click>>, mut page_state_set: ResMut<NextState<MenuPage>>,|{
             page_state_set.set(MenuPage::LevelSelection);
         })
@@ -134,9 +137,10 @@ pub fn level_button(level: Level) -> impl Scene {
             padding: UiRect::left(Val::Px(10.)),
         }
         menu_button(level.get_label(), 30.)
-        on(move |_trigger: On<Pointer<Click>>, mut commands: Commands,mut page_state: ResMut<NextState<MenuPage>>| {
+        // level select
+        on( move | _trigger: On<Pointer<Click>>, mut commands: Commands, mut page_state: ResMut<NextState<MenuPage>>| {
             page_state.set(MenuPage::InputToBeginLevel);
-            commands.trigger(StartLevel(level));
+            commands.trigger(level.clone());
         })
     }
 }
@@ -150,9 +154,10 @@ pub fn pause_icon_button() -> impl Scene {
         }
         // using "||" to imitate pause icon
         menu_button("||", 30.)
+        // pause
         on(|_trigger: On<Pointer<Click>>, mut game_state: ResMut<NextState<GameState>>,mut page_state: ResMut<NextState<MenuPage>>| {
             page_state.set(MenuPage::LevelPaused);
-            game_state.set(GameState::Stopped);
+            game_state.set(GameState::Paused);
         })
     }
 }
