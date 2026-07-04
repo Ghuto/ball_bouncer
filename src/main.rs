@@ -68,15 +68,18 @@ fn main() {
             #[cfg(feature = "inspector")]
             WorldInspectorPlugin::new(),
         ))
-        .add_systems(Startup, spawn_camera)
-        .add_systems(
-            FixedUpdate,
-            (despawn_lost_balls, win_check, lose_check).run_if(in_state(GameState::Running)),
-        )
+        .add_systems(Startup, camera_scene.spawn())
         .add_systems(
             Update,
             (
-                (watch_input_for_pause, control_plane).run_if(in_state(GameState::Running)),
+                (
+                    watch_input_for_pause,
+                    control_plane,
+                    despawn_lost_balls,
+                    win_check,
+                    lose_check,
+                )
+                    .run_if(in_state(GameState::Running)),
                 press_any_button_to_begin.run_if(in_state(GameState::WaitingForInput)),
             ),
         )

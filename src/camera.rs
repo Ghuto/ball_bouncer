@@ -1,9 +1,12 @@
 use bevy::prelude::*;
 
-#[derive(Component)]
-#[require(Camera2d, Name::new("MyCamera"))]
+#[derive(Component, Clone, Default)]
+#[require(Camera2d)]
 pub struct MyCamera;
 
-pub fn spawn_camera(mut commands: Commands) {
-    commands.spawn(MyCamera);
+pub fn camera_scene() -> impl Scene {
+    bsn! {
+        #MyCamera
+        MyCamera
+    }
 }
