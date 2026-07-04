@@ -11,6 +11,7 @@ use crate::editor::EditorPlugin;
 use crate::game_state::*;
 use crate::general_events::*;
 use crate::level::*;
+use crate::level_border::LevelBorder;
 use crate::sounds::*;
 use crate::ui_pages::MenuPage;
 use crate::ui_pages::UIPlugin;
@@ -80,7 +81,7 @@ fn main() {
                     lose_check,
                 )
                     .run_if(in_state(GameState::Running)),
-                press_any_button_to_begin.run_if(in_state(GameState::WaitingForInput)),
+                press_to_button_to_begin.run_if(in_state(GameState::WaitingForInput)),
             ),
         )
         .init_resource::<BrickMesh>()
@@ -109,9 +110,23 @@ fn watch_input_for_pause(
 }
 
 /// When Space button is pressed it resumes the level. Intially it is paused
-fn press_any_button_to_begin(input: Res<ButtonInput<KeyCode>>, mut commands: Commands) {
-    if input.just_pressed(KeyCode::Space) {
-        commands.trigger(ResumeLevel);
+/// begins when everything is spawned
+fn press_to_button_to_begin(
+    input: Res<ButtonInput<KeyCode>>,
+    mut commands: Commands,
+    ball_q: Query<&Ball>,
+    brick_q: Query<&Brick>,
+    controllable_plane_q: Query<&ControllablePlane>,
+    level_border_q: Query<&LevelBorder>,
+) {
+    if !ball_q.is_empty()
+        && !brick_q.is_empty()
+        && !controllable_plane_q.is_empty()
+        && !level_border_q.is_empty()
+    {
+        if input.just_pressed(KeyCode::Space) {
+            commands.trigger(ResumeLevel);
+        }
     }
 }
 
